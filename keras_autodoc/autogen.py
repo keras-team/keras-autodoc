@@ -1,6 +1,6 @@
 from docs.autogen import read_page_data
 from docs.autogen import get_class_signature, class_to_source_link
-from docs.autogen import code_snippet, process_docstring, collect_class_methods, render_function
+from docs.autogen import process_docstring, collect_class_methods, render_function
 from docs.autogen import copy_examples
 import os
 import shutil
@@ -9,6 +9,13 @@ import shutil
 def read_file(path):
     with open(path, encoding='utf-8') as f:
         return f.read()
+
+
+def code_snippet(snippet):
+    result = '```python\n'
+    result += snippet.encode('unicode_escape').decode('utf8') + '\n'
+    result += '```\n'
+    return result
 
 
 def generate(dest_dir, template_dir, pages, examples_dir=None):
