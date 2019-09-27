@@ -1,10 +1,12 @@
 from docs.autogen import read_page_data
 from docs.autogen import get_class_signature, class_to_source_link
-from docs.autogen import process_docstring, render_function
+from docs.autogen import render_function
 from docs.autogen import copy_examples
 import os
 import inspect
 import shutil
+
+from .docstring import process_docstring
 
 
 def collect_class_methods(cls, methods, exclude):
