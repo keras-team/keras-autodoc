@@ -2,7 +2,6 @@ from docs.autogen import keras_dir, read_page_data
 from docs.autogen import get_class_signature, class_to_source_link
 from docs.autogen import code_snippet, process_docstring, collect_class_methods, render_function
 from docs.autogen import copy_examples
-import keras
 import os
 import shutil
 
@@ -33,7 +32,6 @@ def generate(sources_dir, pages):
     with open(os.path.join(sources_dir, 'index.md'), 'w', encoding='utf-8') as f:
         f.write(index)
 
-    print('Generating docs for Keras %s.' % keras.__version__)
     for page_data in pages:
         classes = read_page_data(page_data, 'classes')
 
