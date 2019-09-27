@@ -2,15 +2,11 @@ import inspect
 import os
 import shutil
 
-from docs.autogen import get_class_signature
 from docs.autogen import render_function
 
 from .docstring import process_docstring
 from .examples import copy_examples
-
-
-def pass_function(*args, **kwargs):
-    pass
+from .get_signatures import get_class_signature
 
 
 def read_page_data(page_data, type, exclude):
@@ -65,7 +61,8 @@ def code_snippet(snippet):
 
 
 def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None,
-             clean_module_name=pass_function):
+             clean_module_name=lambda x: x,
+             post_process_signature=lambda x: x):
     """Generates the markdown files for the documentation.
 
     # Arguments
@@ -88,7 +85,9 @@ def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None,
                 element = (element, [])
             cls = element[0]
             subblocks = []
-            signature = get_class_signature(cls)
+            signature = get_class_signature(cls,
+                                            clean_module_name,
+                                            post_process_signature)
             subblocks.append('<span style="float:right;">' +
                              class_to_source_link(cls, clean_module_name)
                              + '</span>')

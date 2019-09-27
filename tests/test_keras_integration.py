@@ -34,6 +34,7 @@ def test_docs_in_custom_destination_dir(tmpdir):
         text = file_path.read_text()
         assert 'keras_applications' not in text
         assert 'keras_preprocessing' not in text
+        assert 'layer.core' not in text
 
 
 def get_all_files(directory):
