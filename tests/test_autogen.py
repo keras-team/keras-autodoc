@@ -5,7 +5,7 @@ import pytest
 
 
 test_doc1 = {
-    'doc': """Base class for recurrent layers.
+    "doc": """Base class for recurrent layers.
 
     # Arguments
         cell: A RNN cell instance. A RNN cell is a class that has:
@@ -158,7 +158,7 @@ test_doc1 = {
         y = layer(x)
     ```
     """,
-    'result': '''Base class for recurrent layers.
+    "result": """Base class for recurrent layers.
 
 __Arguments__
 
@@ -325,11 +325,12 @@ x = keras.Input((None, 5))
 layer = RNN(cells)
 y = layer(x)
 ```
-'''}
+""",
+}
 
 
 test_doc_with_arguments_as_last_block = {
-    'doc': """Base class for recurrent layers.
+    "doc": """Base class for recurrent layers.
 
     # Arguments
         return_sequences: Boolean. Whether to return the last output
@@ -337,7 +338,7 @@ test_doc_with_arguments_as_last_block = {
         return_state: Boolean. Whether to return the last state
             in addition to the output.
     """,
-    'result': '''Base class for recurrent layers.
+    "result": """Base class for recurrent layers.
 
 __Arguments__
 
@@ -345,16 +346,16 @@ __Arguments__
     in the output sequence, or the full sequence.
 - __return_state__: Boolean. Whether to return the last state
     in addition to the output.
-'''}
+""",
+}
 
 
-@pytest.mark.parametrize('docs_descriptor', [
-    test_doc1,
-    test_doc_with_arguments_as_last_block,
-])
+@pytest.mark.parametrize(
+    "docs_descriptor", [test_doc1, test_doc_with_arguments_as_last_block]
+)
 def test_doc_lists(docs_descriptor):
-    docstring = autogen.process_docstring(docs_descriptor['doc'])
-    assert markdown(docstring) == markdown(docs_descriptor['result'])
+    docstring = autogen.process_docstring(docs_descriptor["doc"])
+    assert markdown(docstring) == markdown(docs_descriptor["result"])
 
 
 dummy_docstring = """Multiplies 2 tensors (and/or variables) and returns a *tensor*.
@@ -384,9 +385,9 @@ dummy_docstring = """Multiplies 2 tensors (and/or variables) and returns a *tens
 def test_doc_multiple_sections_code():
     """ Checks that we can have code blocks in multiple sections."""
     generated = autogen.process_docstring(dummy_docstring)
-    assert '# Theano-like behavior example' in generated
-    assert 'def dot(x, y):' in generated
+    assert "# Theano-like behavior example" in generated
+    assert "def dot(x, y):" in generated
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main([__file__])

@@ -1,9 +1,10 @@
 import inspect
 
 
-def get_function_signature(function, clean_module_name,
-                           post_process_signature, method=True):
-    wrapped = getattr(function, '_original_function', None)
+def get_function_signature(
+    function, clean_module_name, post_process_signature, method=True
+):
+    wrapped = getattr(function, "_original_function", None)
     if wrapped is None:
         signature = inspect.getfullargspec(function)
     else:
@@ -14,36 +15,35 @@ def get_function_signature(function, clean_module_name,
     else:
         args = signature.args
     if defaults:
-        kwargs = zip(args[-len(defaults):], defaults)
-        args = args[:-len(defaults)]
+        kwargs = zip(args[-len(defaults) :], defaults)
+        args = args[: -len(defaults)]
     else:
         kwargs = []
-    st = '%s.%s(' % (clean_module_name(function.__module__), function.__name__)
+    st = "%s.%s(" % (clean_module_name(function.__module__), function.__name__)
 
     for a in args:
-        st += str(a) + ', '
+        st += str(a) + ", "
     for a, v in kwargs:
         if isinstance(v, str):
-            v = '\'' + v + '\''
-        st += str(a) + '=' + str(v) + ', '
+            v = "'" + v + "'"
+        st += str(a) + "=" + str(v) + ", "
     if kwargs or args:
-        signature = st[:-2] + ')'
+        signature = st[:-2] + ")"
     else:
-        signature = st + ')'
+        signature = st + ")"
     return post_process_signature(signature)
 
 
 def get_class_signature(cls, clean_module_name, post_process_signature):
     try:
-        class_signature = get_function_signature(cls.__init__,
-                                                 clean_module_name,
-                                                 post_process_signature)
-        class_signature = class_signature.replace('__init__', cls.__name__)
+        class_signature = get_function_signature(
+            cls.__init__, clean_module_name, post_process_signature
+        )
+        class_signature = class_signature.replace("__init__", cls.__name__)
     except (TypeError, AttributeError):
         # in case the class inherits from object and does not
         # define __init__
         class_signature = "{clean_module_name}.{cls_name}()".format(
-            clean_module_name=cls.__module__,
-            cls_name=cls.__name__
+            clean_module_name=cls.__module__, cls_name=cls.__name__
         )
     return post_process_signature(class_signature)
