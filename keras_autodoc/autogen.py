@@ -1,4 +1,4 @@
-from docs.autogen import keras_dir, read_page_data
+from docs.autogen import read_page_data
 from docs.autogen import get_class_signature, class_to_source_link
 from docs.autogen import code_snippet, process_docstring, collect_class_methods, render_function
 from docs.autogen import copy_examples
@@ -11,7 +11,7 @@ def read_file(path):
         return f.read()
 
 
-def generate(dest_dir, template_dir, pages):
+def generate(dest_dir, template_dir, pages, examples_dir=None):
     """Generates the markdown files for the documentation.
 
     # Arguments
@@ -89,5 +89,5 @@ def generate(dest_dir, template_dir, pages):
         with open(path, 'w', encoding='utf-8') as f:
             f.write(mkdown)
 
-    copy_examples(os.path.join(str(keras_dir), 'examples'),
-                  os.path.join(str(dest_dir), 'examples'))
+    if examples_dir is not None:
+        copy_examples(examples_dir, dest_dir / 'examples')
