@@ -46,6 +46,7 @@ def test_docs_in_custom_destination_dir(tmpdir):
     assert "backend.tensorflow_backend" not in text
 
     assert "keras.layers.Dense" in text
+    assert "__Numpy implementation__" in (tmpdir / 'backend.md').read_text()
 
 
 def get_all_files(directory):
