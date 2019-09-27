@@ -1,5 +1,5 @@
 from docs.autogen import read_page_data
-from docs.autogen import get_class_signature, class_to_source_link
+from docs.autogen import get_class_signature
 from docs.autogen import render_function
 from docs.autogen import copy_examples
 import os
@@ -7,6 +7,18 @@ import inspect
 import shutil
 
 from .docstring import process_docstring
+
+
+def pass_function(*args, **kwargs):
+    pass
+
+
+def class_to_source_link(cls, clean_module_name):
+    module_name = clean_module_name(cls.__module__)
+    path = module_name.replace('.', '/')
+    path += '.py'
+    line = inspect.getsourcelines(cls)[-1]
+    return f'[[source]](https://github.com/keras-team/keras/blob/master/{path}#L{line})'
 
 
 def collect_class_methods(cls, methods, exclude):
@@ -32,7 +44,8 @@ def code_snippet(snippet):
     return result
 
 
-def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None):
+def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None,
+             clean_module_name=pass_function):
     """Generates the markdown files for the documentation.
 
     # Arguments
@@ -57,7 +70,8 @@ def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None):
             subblocks = []
             signature = get_class_signature(cls)
             subblocks.append('<span style="float:right;">' +
-                             class_to_source_link(cls) + '</span>')
+                             class_to_source_link(cls, clean_module_name)
+                             + '</span>')
             if element[1]:
                 subblocks.append('## ' + cls.__name__ + ' class\n')
             else:
