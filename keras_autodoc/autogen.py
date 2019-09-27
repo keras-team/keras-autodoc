@@ -1,10 +1,15 @@
-from docs.autogen import keras_dir, read_file, read_page_data
+from docs.autogen import keras_dir, read_page_data
 from docs.autogen import get_class_signature, class_to_source_link
 from docs.autogen import code_snippet, process_docstring, collect_class_methods, render_function
 from docs.autogen import copy_examples
 import keras
 import os
 import shutil
+
+
+def read_file(path):
+    with open(path, encoding='utf-8') as f:
+        return f.read()
 
 
 def generate(sources_dir, pages):
