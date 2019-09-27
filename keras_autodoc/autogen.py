@@ -97,7 +97,5 @@ def generate(sources_dir, pages):
         with open(path, 'w', encoding='utf-8') as f:
             f.write(mkdown)
 
-    shutil.copyfile(os.path.join(str(keras_dir), 'CONTRIBUTING.md'),
-                    os.path.join(str(sources_dir), 'contributing.md'))
     copy_examples(os.path.join(str(keras_dir), 'examples'),
                   os.path.join(str(sources_dir), 'examples'))
