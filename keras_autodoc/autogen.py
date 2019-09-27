@@ -1,11 +1,12 @@
-from docs.autogen import get_class_signature
-from docs.autogen import render_function
-from docs.autogen import copy_examples
-import os
 import inspect
+import os
 import shutil
 
+from docs.autogen import get_class_signature
+from docs.autogen import render_function
+
 from .docstring import process_docstring
+from .examples import copy_examples
 
 
 def pass_function(*args, **kwargs):
