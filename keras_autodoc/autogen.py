@@ -1,4 +1,3 @@
-from docs.autogen import read_page_data
 from docs.autogen import get_class_signature
 from docs.autogen import render_function
 from docs.autogen import copy_examples
@@ -11,6 +10,26 @@ from .docstring import process_docstring
 
 def pass_function(*args, **kwargs):
     pass
+
+
+def read_page_data(page_data, type, exclude):
+    assert type in ['classes', 'functions', 'methods']
+    data = page_data.get(type, [])
+    for module in page_data.get('all_module_{}'.format(type), []):
+        module_data = []
+        for name in dir(module):
+            if name[0] == '_' or name in exclude:
+                continue
+            module_member = getattr(module, name)
+            if (inspect.isclass(module_member) and type == 'classes' or
+               inspect.isfunction(module_member) and type == 'functions'):
+                instance = module_member
+                if module.__name__ in instance.__module__:
+                    if instance not in module_data:
+                        module_data.append(instance)
+        module_data.sort(key=lambda x: id(x))
+        data += module_data
+    return data
 
 
 def class_to_source_link(cls, clean_module_name):
@@ -60,7 +79,7 @@ def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None,
     shutil.copytree(template_dir, dest_dir)
 
     for page_data in pages:
-        classes = read_page_data(page_data, 'classes')
+        classes = read_page_data(page_data, 'classes', exclude)
 
         blocks = []
         for element in classes:
@@ -89,12 +108,12 @@ def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None,
                      for method in methods]))
             blocks.append('\n'.join(subblocks))
 
-        methods = read_page_data(page_data, 'methods')
+        methods = read_page_data(page_data, 'methods', exclude)
 
         for method in methods:
             blocks.append(render_function(method, method=True))
 
-        functions = read_page_data(page_data, 'functions')
+        functions = read_page_data(page_data, 'functions', exclude)
 
         for function in functions:
             blocks.append(render_function(function, method=False))
