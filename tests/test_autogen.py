@@ -388,14 +388,5 @@ def test_doc_multiple_sections_code():
     assert 'def dot(x, y):' in generated
 
 
-def test_docs_in_custom_destination_dir(tmpdir):
-    autogen.generate(tmpdir)
-    assert os.path.isdir(os.path.join(tmpdir, 'layers'))
-    assert os.path.isdir(os.path.join(tmpdir, 'models'))
-    assert os.path.isdir(os.path.join(tmpdir, 'examples'))
-    assert os.listdir(os.path.join(tmpdir, 'examples'))
-
-
-
 if __name__ == '__main__':
     pytest.main([__file__])
