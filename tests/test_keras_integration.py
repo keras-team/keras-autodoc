@@ -1,9 +1,10 @@
 from keras_autodoc.autogen import generate
+from docs.structure import PAGES
 import os
 
 
 def test_docs_in_custom_destination_dir(tmpdir):
-    generate(str(tmpdir))
+    generate(str(tmpdir), PAGES)
     assert os.path.isdir(os.path.join(tmpdir, 'layers'))
     assert os.path.isdir(os.path.join(tmpdir, 'models'))
     assert os.path.isdir(os.path.join(tmpdir, 'examples'))

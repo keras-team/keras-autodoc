@@ -1,25 +1,19 @@
-from docs.autogen import keras_dir, read_file, PAGES, read_page_data
+from docs.autogen import keras_dir, read_file, read_page_data
 from docs.autogen import get_class_signature, class_to_source_link
 from docs.autogen import code_snippet, process_docstring, collect_class_methods, render_function
 from docs.autogen import copy_examples
 import keras
 import os
-import keras.backend as K
 import shutil
 
 
-def generate(sources_dir):
+def generate(sources_dir, pages):
     """Generates the markdown files for the documentation.
 
     # Arguments
         sources_dir: Where to put the markdown files.
     """
     template_dir = os.path.join(str(keras_dir), 'docs', 'templates')
-
-    if K.backend() != 'tensorflow':
-        raise RuntimeError('The documentation must be built '
-                           'with the TensorFlow backend because this '
-                           'is the only backend with docstrings.')
 
     print('Cleaning up existing sources directory.')
     if os.path.exists(sources_dir):
@@ -35,7 +29,7 @@ def generate(sources_dir):
         f.write(index)
 
     print('Generating docs for Keras %s.' % keras.__version__)
-    for page_data in PAGES:
+    for page_data in pages:
         classes = read_page_data(page_data, 'classes')
 
         blocks = []
