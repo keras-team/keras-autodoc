@@ -2,11 +2,32 @@ import inspect
 import os
 import shutil
 
-from docs.autogen import render_function
+from docs.autogen import add_np_implementation
 
 from .docstring import process_docstring
 from .examples import copy_examples
-from .get_signatures import get_class_signature
+from .get_signatures import get_class_signature, get_function_signature
+
+
+def render_function(function,
+                    clean_module_name,
+                    post_process_signature,
+                    method=True):
+    subblocks = []
+    signature = get_function_signature(function, clean_module_name,
+                           post_process_signature, method=method)
+    if method:
+        signature = signature.replace(
+            clean_module_name(function.__module__) + '.', '')
+    subblocks.append('### ' + function.__name__ + '\n')
+    subblocks.append(code_snippet(signature))
+    docstring = function.__doc__
+    if docstring:
+        if ('backend' in signature and
+                '{{np_implementation}}' in docstring):
+            docstring = add_np_implementation(function, docstring)
+        subblocks.append(process_docstring(docstring))
+    return '\n\n'.join(subblocks)
 
 
 def read_page_data(page_data, type, exclude):
@@ -104,19 +125,22 @@ def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None,
                 subblocks.append('\n---')
                 subblocks.append('## ' + cls.__name__ + ' methods\n')
                 subblocks.append('\n---\n'.join(
-                    [render_function(method, method=True)
+                    [render_function(method, clean_module_name,
+                    post_process_signature, method=True)
                      for method in methods]))
             blocks.append('\n'.join(subblocks))
 
         methods = read_page_data(page_data, 'methods', exclude)
 
         for method in methods:
-            blocks.append(render_function(method, method=True))
+            blocks.append(render_function(method, clean_module_name,
+                    post_process_signature, method=True))
 
         functions = read_page_data(page_data, 'functions', exclude)
 
         for function in functions:
-            blocks.append(render_function(function, method=False))
+            blocks.append(render_function(function, clean_module_name,
+                    post_process_signature, method=False))
 
         if not blocks:
             raise RuntimeError('Found no content for page ' +
