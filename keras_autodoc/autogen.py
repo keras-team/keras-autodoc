@@ -1,9 +1,21 @@
 from docs.autogen import read_page_data
 from docs.autogen import get_class_signature, class_to_source_link
-from docs.autogen import process_docstring, collect_class_methods, render_function
+from docs.autogen import process_docstring, render_function
 from docs.autogen import copy_examples
 import os
+import inspect
 import shutil
+
+
+def collect_class_methods(cls, methods, exclude):
+    if isinstance(methods, (list, tuple)):
+        return [getattr(cls, m) if isinstance(m, str) else m for m in methods]
+    methods = []
+    for _, method in inspect.getmembers(cls, predicate=inspect.isroutine):
+        if method.__name__[0] == '_' or method.__name__ in exclude:
+            continue
+        methods.append(method)
+    return methods
 
 
 def read_file(path):
@@ -18,12 +30,13 @@ def code_snippet(snippet):
     return result
 
 
-def generate(dest_dir, template_dir, pages, examples_dir=None):
+def generate(dest_dir, template_dir, pages, examples_dir=None, exclude=None):
     """Generates the markdown files for the documentation.
 
     # Arguments
         sources_dir: Where to put the markdown files.
     """
+    exclude = exclude or []
     print('Cleaning up existing sources directory.')
     if os.path.exists(dest_dir):
         shutil.rmtree(dest_dir)
@@ -51,7 +64,7 @@ def generate(dest_dir, template_dir, pages, examples_dir=None):
             docstring = cls.__doc__
             if docstring:
                 subblocks.append(process_docstring(docstring))
-            methods = collect_class_methods(cls, element[1])
+            methods = collect_class_methods(cls, element[1], exclude)
             if methods:
                 subblocks.append('\n---')
                 subblocks.append('## ' + cls.__name__ + ' methods\n')
