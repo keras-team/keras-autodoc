@@ -8,4 +8,4 @@ RUN pip install -e ./keras
 
 COPY ./ ./keras-autodoc
 RUN pip install -e ./keras-autodoc
-RUN pytest ./keras-autodoc/tests/test_keras_integration.py
+RUN pytest ./keras-autodoc/tests/
