@@ -1,10 +1,17 @@
 from keras_autodoc.autogen import generate
 from docs.autogen import keras_dir, clean_module_name, post_process_signature
+from docs.autogen import add_np_implementation
 from docs.structure import PAGES, EXCLUDE
 import shutil
 import os
 
 from pathlib import Path
+
+
+def preprocess_docstring(docstring, function, signature):
+    if "backend" in signature and "{{np_implementation}}" in docstring:
+        docstring = add_np_implementation(function, docstring)
+    return docstring
 
 
 def make_keras_docs(dest_dir):
@@ -18,6 +25,7 @@ def make_keras_docs(dest_dir):
         EXCLUDE,
         clean_module_name=clean_module_name,
         post_process_signature=post_process_signature,
+        preprocess_docstring=preprocess_docstring,
     )
     readme = (keras_dir / "README.md").read_text()
     index = (template_dir / "index.md").read_text()

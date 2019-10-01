@@ -2,14 +2,14 @@ import inspect
 import os
 import shutil
 
-from docs.autogen import add_np_implementation
-
 from .docstring import process_docstring
 from .examples import copy_examples
 from .get_signatures import get_class_signature, get_function_signature
 
 
-def render_function(function, clean_module_name, post_process_signature, method=True):
+def render_function(function, clean_module_name, post_process_signature,
+                    preprocess_docstring=None,
+                    method=True):
     subblocks = []
     signature = get_function_signature(
         function, clean_module_name, post_process_signature, method=method
@@ -20,8 +20,8 @@ def render_function(function, clean_module_name, post_process_signature, method=
     subblocks.append(code_snippet(signature))
     docstring = function.__doc__
     if docstring:
-        if "backend" in signature and "{{np_implementation}}" in docstring:
-            docstring = add_np_implementation(function, docstring)
+        if preprocess_docstring is not None:
+            docstring = preprocess_docstring(docstring, function, signature)
         subblocks.append(process_docstring(docstring))
     return "\n\n".join(subblocks)
 
@@ -89,6 +89,7 @@ def generate(
     exclude=None,
     clean_module_name=lambda x: x,
     post_process_signature=lambda x: x,
+    preprocess_docstring=None
 ):
     """Generates the markdown files for the documentation.
 
@@ -161,7 +162,8 @@ def generate(
         for function in functions:
             blocks.append(
                 render_function(
-                    function, clean_module_name, post_process_signature, method=False
+                    function, clean_module_name, post_process_signature, preprocess_docstring,
+                    method=False,
                 )
             )
 
