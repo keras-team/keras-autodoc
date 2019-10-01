@@ -50,12 +50,12 @@ def read_page_data(page_data, type, exclude):
     return data
 
 
-def class_to_source_link(cls, clean_module_name):
+def class_to_source_link(cls, clean_module_name, project_url):
     module_name = clean_module_name(cls.__module__)
     path = module_name.replace(".", "/")
     path += ".py"
     line = inspect.getsourcelines(cls)[-1]
-    return f"[[source]](https://github.com/keras-team/keras/blob/master/{path}#L{line})"
+    return f"[[source]]({project_url}/{path}#L{line})"
 
 
 def collect_class_methods(cls, methods, exclude):
@@ -85,11 +85,12 @@ def generate(
     dest_dir,
     template_dir,
     pages,
+    project_url,
     examples_dir=None,
     exclude=None,
     clean_module_name=lambda x: x,
     post_process_signature=lambda x: x,
-    preprocess_docstring=None
+    preprocess_docstring=None,
 ):
     """Generates the markdown files for the documentation.
 
@@ -118,7 +119,7 @@ def generate(
             )
             subblocks.append(
                 '<span style="float:right;">'
-                + class_to_source_link(cls, clean_module_name)
+                + class_to_source_link(cls, clean_module_name, project_url)
                 + "</span>"
             )
             if element[1]:

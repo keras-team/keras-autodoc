@@ -21,6 +21,7 @@ def make_keras_docs(dest_dir):
         dest_dir,
         template_dir,
         PAGES,
+        'https://github.com/keras-team/keras/blob/master',
         keras_dir / "examples",
         EXCLUDE,
         clean_module_name=clean_module_name,
