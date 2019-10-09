@@ -15,7 +15,7 @@ def get_function_signature(
     else:
         args = signature.args
     if defaults:
-        kwargs = zip(args[-len(defaults) :], defaults)
+        kwargs = zip(args[-len(defaults):], defaults)
         args = args[: -len(defaults)]
     else:
         kwargs = []

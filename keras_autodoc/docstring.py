@@ -9,14 +9,20 @@ def count_leading_spaces(s):
         return 0
 
 
-def process_list_block(docstring, starting_point, section_end, leading_spaces, marker):
+def process_list_block(docstring,
+                       starting_point,
+                       section_end,
+                       leading_spaces,
+                       marker):
     ending_point = docstring.find("\n\n", starting_point)
     block = docstring[
-        starting_point : (ending_point - 1 if ending_point > -1 else section_end)
+        starting_point: (ending_point - 1 if ending_point > -1 else section_end)
     ]
     # Place marker for later reinjection.
     docstring_slice = docstring[starting_point:section_end].replace(block, marker)
-    docstring = docstring[:starting_point] + docstring_slice + docstring[section_end:]
+    docstring = (docstring[:starting_point]
+                 + docstring_slice
+                 + docstring[section_end:])
     lines = block.split("\n")
     # Remove the computed number of leading white spaces from each line.
     lines = [re.sub("^" + " " * leading_spaces, "", line) for line in lines]
@@ -57,11 +63,12 @@ def process_docstring(docstring):
     if "```" in docstring:
         tmp = docstring[:]
         while "```" in tmp:
-            tmp = tmp[tmp.find("```") :]
+            tmp = tmp[tmp.find("```"):]
             index = tmp[3:].find("```") + 6
             snippet = tmp[:index]
             # Place marker in docstring for later reinjection.
-            docstring = docstring.replace(snippet, "$CODE_BLOCK_%d" % len(code_blocks))
+            docstring = docstring.replace(snippet,
+                                          "$CODE_BLOCK_%d" % len(code_blocks))
             snippet_lines = snippet.split("\n")
             # Remove leading spaces.
             num_leading_spaces = snippet_lines[-1].find("`")

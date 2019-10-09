@@ -1,4 +1,3 @@
-import os
 from markdown import markdown
 from keras_autodoc import autogen
 import pytest

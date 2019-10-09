@@ -15,7 +15,8 @@ def render_function(function, clean_module_name, post_process_signature,
         function, clean_module_name, post_process_signature, method=method
     )
     if method:
-        signature = signature.replace(clean_module_name(function.__module__) + ".", "")
+        signature = signature.replace(clean_module_name(function.__module__) + ".",
+                                      "")
     subblocks.append("### " + function.__name__ + "\n")
     subblocks.append(code_snippet(signature))
     docstring = function.__doc__
@@ -163,7 +164,8 @@ def generate(
         for function in functions:
             blocks.append(
                 render_function(
-                    function, clean_module_name, post_process_signature, preprocess_docstring,
+                    function, clean_module_name,
+                    post_process_signature, preprocess_docstring,
                     method=False,
                 )
             )
