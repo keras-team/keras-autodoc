@@ -53,7 +53,13 @@ def test_docs_in_custom_destination_dir(tmpdir):
     assert "layers.pooling" not in text
     assert "utils.np_utils" not in text
     assert "backend.tensorflow_backend" not in text
-
+    assert (
+        "keras.layers.Dense(units, activation=None, use_bias=True, "
+        "kernel_initializer='glorot_uniform', bias_initializer='zeros', "
+        "kernel_regularizer=None, bias_regularizer=None, "
+        "activity_regularizer=None, kernel_constraint=None, "
+        "bias_constraint=None)"
+    ) in text
     assert "keras.layers.Dense" in text
     assert "__Numpy implementation__" in (tmpdir / 'backend.md').read_text()
 
