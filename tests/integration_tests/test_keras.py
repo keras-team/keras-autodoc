@@ -60,6 +60,19 @@ def test_docs_in_custom_destination_dir(tmpdir):
         "activity_regularizer=None, kernel_constraint=None, "
         "bias_constraint=None)"
     ) in text
+
+    assert (
+        '```python\n'
+        '# as first layer in a sequential model:\n'
+        'model = Sequential()\n'
+        'model.add(Dense(32, input_shape=(16,)))\n'
+        '# now the model will take as input arrays of shape (*, 16)\n'
+        '# and output arrays of shape (*, 32)\n'
+        '\n'
+        '# after the first layer, you don\'t need to specify\n'
+        '# the size of the input anymore:\n'
+        'model.add(Dense(32))\n'
+    ) in text
     assert "keras.layers.Dense" in text
     assert "__Numpy implementation__" in (tmpdir / 'backend.md').read_text()
 

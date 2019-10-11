@@ -14,9 +14,8 @@ def copy_examples(examples_dir, destination_dir):
         module_path = os.path.join(examples_dir, file)
         docstring, starting_line = get_module_docstring(module_path)
         destination_file = os.path.join(destination_dir, file[:-2] + "md")
-        with open(destination_file, "w+", encoding="utf-8") as f_out, open(
-            os.path.join(examples_dir, file), "r+", encoding="utf-8"
-        ) as f_in:
+        with open(destination_file, "w+", encoding="utf-8") as f_out, \
+                open(examples_dir / file, "r+", encoding="utf-8") as f_in:
 
             f_out.write(docstring + "\n\n")
 
