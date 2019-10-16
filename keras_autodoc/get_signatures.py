@@ -1,4 +1,5 @@
 import inspect
+import warnings
 
 
 def get_function_signature(
@@ -19,7 +20,15 @@ def get_function_signature(
         args = args[: -len(defaults)]
     else:
         kwargs = []
-    st = f"{clean_module_name(function.__module__)}.{function.__name__}("
+    try:
+        function_module = function.__module__
+    except AttributeError:
+        warnings.warn(f'function {function} has no module. '
+                      f'It will not be included in the signature.')
+        function_module = ''
+    else:
+        function_module = f'{clean_module_name(function_module)}.'
+    st = f'{function_module}{function.__name__}('
 
     for a in args:
         st += str(a) + ", "
@@ -36,12 +45,14 @@ def get_function_signature(
 
 def get_class_signature(cls, clean_module_name, post_process_signature):
     try:
-        class_signature = get_function_signature(
-            cls.__init__, clean_module_name, post_process_signature
-        )
-        class_signature = class_signature.replace("__init__", cls.__name__)
+        init_method = cls.__init__
     except (TypeError, AttributeError):
         # in case the class inherits from object and does not
         # define __init__
         class_signature = f"{cls.__module__}.{cls.__name__}()"
+    else:
+        class_signature = get_function_signature(
+            init_method, clean_module_name, post_process_signature
+        )
+        class_signature = class_signature.replace("__init__", cls.__name__)
     return post_process_signature(class_signature)

@@ -1,6 +1,6 @@
-import inspect
 import shutil
 import pathlib
+import inspect
 
 from .docstring import process_docstring
 from .examples import copy_examples
@@ -68,8 +68,6 @@ def collect_class_methods(cls, methods, exclude):
 
 def get_class_and_methods(element, clean_module_name, post_process_signature,
                           project_url, exclude):
-    if not isinstance(element, (list, tuple)):
-        element = (element, [])
     cls = element[0]
     subblocks = []
     signature = get_class_signature(
@@ -111,6 +109,7 @@ def generate_markdown(page,
                       project_url,
                       preprocess_docstring):
     classes, methods, functions = read_page_data(page, exclude)
+    utils.format_page_values(classes, methods, functions, name=page['page'])
 
     blocks = []
     for element in classes:

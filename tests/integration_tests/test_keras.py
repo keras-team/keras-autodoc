@@ -2,6 +2,7 @@ from keras_autodoc.autogen import generate
 from docs.autogen import keras_dir, clean_module_name, post_process_signature
 from docs.autogen import add_np_implementation
 from docs.structure import PAGES, EXCLUDE
+from keras.layers import Input
 import shutil
 import os
 
@@ -14,7 +15,17 @@ def preprocess_docstring(docstring, function, signature):
     return docstring
 
 
+def fix_keras_pages():
+    for page in PAGES:
+        if not page['page'] == 'layers/core.md':
+            continue
+        page['classes'].remove(Input)
+        page['functions'] = [Input]
+
+
 def make_keras_docs(dest_dir):
+
+    fix_keras_pages()
     dest_dir = Path(dest_dir)
     template_dir = keras_dir / "docs" / "templates"
     generate(

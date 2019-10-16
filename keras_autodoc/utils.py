@@ -43,3 +43,14 @@ def make_source_link(cls, clean_module_name, project_url):
     return (f'<span style="float:right;">'
             f'[[source]]({project_url}/{path}.py#L{line})'
             f'</span>')
+
+
+def format_page_values(classes, methods, functions, name):
+    for i in range(len(classes)):
+        if not isinstance(classes[i], (list, tuple)):
+            classes[i] = (classes[i], [])
+    for class_, class_methods in classes:
+        if not inspect.isclass(class_):
+            # TODO: add a test for this
+            raise TypeError(f'{class_} was given in the class list '
+                            f'of {name} but {class_} is not a Python class.')
