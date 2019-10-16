@@ -1,12 +1,6 @@
 import re
 
-
-def count_leading_spaces(s):
-    ws = re.search(r"\S", s)
-    if ws:
-        return ws.start()
-    else:
-        return 0
+from . import utils
 
 
 def process_list_block(docstring,
@@ -82,7 +76,7 @@ def process_docstring(docstring):
             for line in inner_lines:
                 if not line or line[0] == "\n":
                     continue
-                spaces = count_leading_spaces(line)
+                spaces = utils.count_leading_spaces(line)
                 if leading_spaces is None:
                     leading_spaces = spaces
                 if spaces < leading_spaces:

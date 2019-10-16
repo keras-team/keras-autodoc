@@ -1,7 +1,8 @@
 from markdown import markdown
 from keras_autodoc import autogen
 import pytest
-
+import pathlib
+from .dummy_package import dummy_module
 
 test_doc1 = {
     "doc": """Base class for recurrent layers.
@@ -386,6 +387,30 @@ def test_doc_multiple_sections_code():
     generated = autogen.process_docstring(dummy_docstring)
     assert "# Theano-like behavior example" in generated
     assert "def dot(x, y):" in generated
+
+
+def test_generate_markdown():
+    page = dict(
+        page='dummy.md',
+        classes=[dummy_module.Dense, (dummy_module.ImageDataGenerator, '*')],
+        functions=[dummy_module.to_categorical]
+    )
+
+    markdown_text = autogen.generate_markdown(
+        page,
+        exclude=[],
+        clean_module_name=lambda x: x,
+        post_process_signature=lambda x: x,
+        project_url='www.dummy.com/my_project',
+        preprocess_docstring=None
+    )
+
+    current_file_path = pathlib.Path(__file__).resolve()
+    expected_file = current_file_path.parent / 'dummy_package' / 'expected.md'
+    expected_text = expected_file.read_text()
+    # we check that the generated html is the same
+    # to ignore blank lines or other differences not relevant.
+    assert markdown(markdown_text) == markdown(expected_text)
 
 
 if __name__ == "__main__":
