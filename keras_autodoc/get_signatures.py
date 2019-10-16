@@ -2,24 +2,8 @@ import inspect
 import warnings
 
 
-def get_function_signature(
-    function, clean_module_name, post_process_signature, method=True
-):
-    wrapped = getattr(function, "_original_function", None)
-    if wrapped is None:
-        signature = inspect.getfullargspec(function)
-    else:
-        signature = inspect.getfullargspec(wrapped)
-    defaults = signature.defaults
-    if method:
-        args = signature.args[1:]
-    else:
-        args = signature.args
-    if defaults:
-        kwargs = zip(args[-len(defaults):], defaults)
-        args = args[: -len(defaults)]
-    else:
-        kwargs = []
+def get_signature_start(function, clean_module_name):
+    """For the Dense layer, it should return the string 'keras.layers.Dense'"""
     try:
         function_module = function.__module__
     except AttributeError:
@@ -28,7 +12,30 @@ def get_function_signature(
         function_module = ''
     else:
         function_module = f'{clean_module_name(function_module)}.'
-    st = f'{function_module}{function.__name__}('
+    return f'{function_module}{function.__name__}'
+
+
+def get_function_signature(
+    function, clean_module_name, post_process_signature, method=True
+):
+    wrapped = getattr(function, "_original_function", None)
+    if wrapped is None:
+        signature = inspect.getfullargspec(function)
+    else:
+        signature = inspect.getfullargspec(wrapped)
+    if method:
+        args = signature.args[1:]
+    else:
+        args = signature.args
+    defaults = signature.defaults
+    if defaults:
+        kwargs = zip(args[-len(defaults):], defaults)
+        args = args[: -len(defaults)]
+    else:
+        kwargs = []
+
+    signature_start = get_signature_start(function, clean_module_name)
+    st = f'{signature_start}('
 
     for a in args:
         st += str(a) + ", "

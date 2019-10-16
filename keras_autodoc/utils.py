@@ -30,10 +30,8 @@ def insert_in_file(markdown_text, file_path):
 
 
 def code_snippet(snippet):
-    return (
-        f'```python\n'
-        f'{snippet.encode("unicode_escape").decode("utf8")}\n'
-        f'```\n')
+    snippet = snippet.encode("unicode_escape").decode("utf8")
+    return f'```python\n{snippet}\n```\n'
 
 
 def make_source_link(cls, clean_module_name, project_url):
