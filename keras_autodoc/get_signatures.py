@@ -18,11 +18,8 @@ def get_signature_start(function, clean_module_name):
 def get_function_signature(
     function, clean_module_name, post_process_signature, method=True
 ):
-    wrapped = getattr(function, "_original_function", None)
-    if wrapped is None:
-        signature = inspect.getfullargspec(function)
-    else:
-        signature = inspect.getfullargspec(wrapped)
+    original_function = getattr(function, "_original_function", function)
+    signature = inspect.getfullargspec(original_function)
     if method:
         args = signature.args[1:]
     else:
