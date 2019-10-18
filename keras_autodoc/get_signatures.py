@@ -32,10 +32,9 @@ def get_function_signature(
 ):
     original_function = getattr(function, "_original_function", function)
     signature = inspect.getfullargspec(original_function)
-    if method:
-        args = signature.args[1:]
-    else:
-        args = signature.args
+    args = list(signature.args)
+    if method and args and args[0] == 'self':
+        args.pop(0)
     defaults = signature.defaults
     if defaults:
         kwargs = zip(args[-len(defaults):], defaults)
