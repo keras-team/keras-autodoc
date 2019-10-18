@@ -15,6 +15,18 @@ def get_signature_start(function, clean_module_name):
     return f'{function_module}{function.__name__}'
 
 
+def get_signature_end(args, kwargs):
+    kwargs_formatted = []
+    for a, v in kwargs:
+        if isinstance(v, str):
+            v = f"'{v}'"
+        kwargs_formatted.append(f'{a}={v}')
+
+    all_args_str = map(str, args + kwargs_formatted)
+    all_args_str = ', '.join(all_args_str)
+    return f'({all_args_str})'
+
+
 def get_function_signature(
     function, clean_module_name, post_process_signature, method=True
 ):
@@ -32,19 +44,8 @@ def get_function_signature(
         kwargs = []
 
     signature_start = get_signature_start(function, clean_module_name)
-    st = f'{signature_start}('
-
-    for a in args:
-        st += str(a) + ", "
-    for a, v in kwargs:
-        if isinstance(v, str):
-            v = f"'{v}'"
-        st += f'{a}={v}, '
-    if kwargs or args:
-        signature = st[:-2] + ")"
-    else:
-        signature = st + ")"
-    return post_process_signature(signature)
+    signature_end = get_signature_end(args, kwargs)
+    return post_process_signature(signature_start + signature_end)
 
 
 def get_class_signature(cls, clean_module_name, post_process_signature):
