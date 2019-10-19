@@ -11,7 +11,7 @@ from . import utils
 
 def render_function(function, post_process_signature,
                     preprocess_docstring=None,
-                    method=True):
+                    method=False):
     subblocks = []
     signature = get_function_signature(
         function, post_process_signature, method=method
@@ -116,8 +116,7 @@ def generate_markdown(page,
     for function in functions:
         block = render_function(function,
                                 post_process_signature,
-                                preprocess_docstring,
-                                method=False)
+                                preprocess_docstring)
         blocks.append(block)
 
     if not blocks:
