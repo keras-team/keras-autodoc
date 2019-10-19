@@ -165,29 +165,3 @@ def collect_class_methods(cls, methods, exclude):
             continue
         methods.append(method)
     return methods
-
-
-# TODO: remove that
-def generate(
-    dest_dir,
-    template_dir,
-    pages,
-    project_url,
-    examples_dir=None,
-    exclude=None,
-    post_process_signature=lambda x: x,
-    preprocess_docstring=None,
-):
-    """Generates the markdown files for the documentation.
-
-    # Arguments
-        sources_dir: Where to put the markdown files.
-    """
-    doc_generator = DocumentationGenerator(pages,
-                                           project_url,
-                                           template_dir,
-                                           examples_dir,
-                                           exclude)
-    doc_generator.process_signature = post_process_signature
-    doc_generator.process_function_docstring = preprocess_docstring
-    doc_generator.generate(dest_dir)

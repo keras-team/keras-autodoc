@@ -1,2 +1,1 @@
-from .autogen import generate
-from .docstring import process_docstring
+from .autogen import DocumentationGenerator
