@@ -27,7 +27,7 @@ def get_signature_end(args, kwargs):
     return f'({all_args_str})'
 
 
-def get_function_signature(function, post_process_signature, method=False):
+def get_function_signature(function, method=False):
     original_function = getattr(function, "_original_function", function)
     signature = inspect.getfullargspec(original_function)
     args = list(signature.args)
@@ -39,10 +39,10 @@ def get_function_signature(function, post_process_signature, method=False):
 
     signature_start = get_signature_start(function)
     signature_end = get_signature_end(args, kwargs)
-    return post_process_signature(signature_start + signature_end)
+    return signature_start + signature_end
 
 
-def get_class_signature(cls, post_process_signature):
+def get_class_signature(cls):
     try:
         init_method = cls.__init__
     except (TypeError, AttributeError):
@@ -50,8 +50,6 @@ def get_class_signature(cls, post_process_signature):
         # define __init__
         class_signature = f"{cls.__module__}.{cls.__name__}()"
     else:
-        class_signature = get_function_signature(
-            init_method, post_process_signature, method=True
-        )
+        class_signature = get_function_signature(init_method, method=True)
         class_signature = class_signature.replace("__init__", cls.__name__)
-    return post_process_signature(class_signature)
+    return class_signature

@@ -396,13 +396,10 @@ def test_generate_markdown():
         functions=[dummy_module.to_categorical]
     )
 
-    markdown_text = autogen.generate_markdown(
-        page,
-        exclude=[],
-        post_process_signature=lambda x: x,
-        project_url='www.dummy.com/my_project',
-        preprocess_docstring=None
+    doc_generator = autogen.DocumentationGenerator(
+        project_url='www.dummy.com/my_project'
     )
+    markdown_text = doc_generator._generate_markdown(page)
 
     current_file_path = pathlib.Path(__file__).resolve()
     expected_file = current_file_path.parent / 'dummy_package' / 'expected.md'

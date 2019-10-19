@@ -1,4 +1,4 @@
-from keras_autodoc.autogen import generate
+from keras_autodoc.autogen import generate, process_docstring
 from docs.autogen import keras_dir
 from docs.autogen import add_np_implementation
 from docs.structure import PAGES, EXCLUDE
@@ -14,7 +14,7 @@ def preprocess_docstring(docstring, function):
     if ("keras.backend." in function.__module__
             and "{{np_implementation}}" in docstring):
         docstring = add_np_implementation(function, docstring)
-    return docstring
+    return process_docstring(docstring)
 
 
 def post_process_signature(signature):
