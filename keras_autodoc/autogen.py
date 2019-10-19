@@ -23,7 +23,7 @@ def render_function(function, post_process_signature,
     docstring = function.__doc__
     if docstring:
         if preprocess_docstring is not None:
-            docstring = preprocess_docstring(docstring, function, signature)
+            docstring = preprocess_docstring(docstring, function)
         subblocks.append(process_docstring(docstring))
     return "\n\n".join(subblocks)
 
@@ -67,13 +67,12 @@ def collect_class_methods(cls, methods, exclude):
 
 def get_class_and_methods(element, post_process_signature, project_url, exclude):
     cls = element[0]
-    subblocks = []
-    signature = get_class_signature(cls, post_process_signature)
-    subblocks.append(utils.make_source_link(cls, project_url))
+    subblocks = [utils.make_source_link(cls, project_url)]
     if element[1]:
         subblocks.append(f"## {cls.__name__} class\n")
     else:
         subblocks.append(f"### {cls.__name__}\n")
+    signature = get_class_signature(cls, post_process_signature)
     subblocks.append(utils.code_snippet(signature))
     docstring = cls.__doc__
     if docstring:

@@ -10,8 +10,9 @@ import re
 from pathlib import Path
 
 
-def preprocess_docstring(docstring, function, signature):
-    if "backend" in signature and "{{np_implementation}}" in docstring:
+def preprocess_docstring(docstring, function):
+    if ("keras.backend." in function.__module__
+            and "{{np_implementation}}" in docstring):
         docstring = add_np_implementation(function, docstring)
     return docstring
 
@@ -34,7 +35,10 @@ def fix_keras_pages():
     for page in PAGES:
         if not page['page'] == 'layers/core.md':
             continue
-        page['classes'].remove(Input)
+        try:
+            page['classes'].remove(Input)
+        except ValueError:
+            pass
         page['functions'] = [Input]
 
 
