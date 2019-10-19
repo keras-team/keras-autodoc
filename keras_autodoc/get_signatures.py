@@ -35,12 +35,9 @@ def get_function_signature(
     args = list(signature.args)
     if method and args and args[0] == 'self':
         args.pop(0)
-    defaults = signature.defaults
-    if defaults:
-        kwargs = zip(args[-len(defaults):], defaults)
-        args = args[: -len(defaults)]
-    else:
-        kwargs = []
+    defaults = signature.defaults or []
+    kwargs = zip(args[-len(defaults):], defaults)
+    args = args[: len(args)-len(defaults)]
 
     signature_start = get_signature_start(function, clean_module_name)
     signature_end = get_signature_end(args, kwargs)
