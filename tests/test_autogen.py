@@ -399,7 +399,6 @@ def test_generate_markdown():
     markdown_text = autogen.generate_markdown(
         page,
         exclude=[],
-        clean_module_name=lambda x: x,
         post_process_signature=lambda x: x,
         project_url='www.dummy.com/my_project',
         preprocess_docstring=None

@@ -1,10 +1,11 @@
 from keras_autodoc.autogen import generate
-from docs.autogen import keras_dir, clean_module_name, post_process_signature
+from docs.autogen import keras_dir
 from docs.autogen import add_np_implementation
 from docs.structure import PAGES, EXCLUDE
 from keras.layers import Input
 import shutil
 import os
+import re
 
 from pathlib import Path
 
@@ -13,6 +14,20 @@ def preprocess_docstring(docstring, function, signature):
     if "backend" in signature and "{{np_implementation}}" in docstring:
         docstring = add_np_implementation(function, docstring)
     return docstring
+
+
+def post_process_signature(signature):
+    parts = re.split(r'\.(?!\d)', signature)
+    if len(parts) >= 4:
+        if parts[1] == 'layers':
+            signature = 'keras.layers.' + '.'.join(parts[3:])
+        if parts[1] == 'utils':
+            signature = 'keras.utils.' + '.'.join(parts[3:])
+        if parts[1] == 'backend':
+            signature = 'keras.backend.' + '.'.join(parts[3:])
+    signature = signature.replace('keras_applications', 'keras.applications')
+    signature = signature.replace('keras_preprocessing', 'keras.preprocessing')
+    return signature
 
 
 def fix_keras_pages():
@@ -28,14 +43,21 @@ def make_keras_docs(dest_dir):
     fix_keras_pages()
     dest_dir = Path(dest_dir)
     template_dir = keras_dir / "docs" / "templates"
+
+    keras_team_url = 'https://github.com/keras-team'
+
+    project_url = {
+        'keras': f'{keras_team_url}/keras/blob/master',
+        'keras_applications': f'{keras_team_url}/keras-applications/blob/master',
+        'keras_preprocessing': f'{keras_team_url}/keras-preprocessing/blob/master',
+    }
     generate(
         dest_dir,
         template_dir,
         PAGES,
-        'https://github.com/keras-team/keras/blob/master',
+        project_url,
         keras_dir / "examples",
         EXCLUDE,
-        clean_module_name=clean_module_name,
         post_process_signature=post_process_signature,
         preprocess_docstring=preprocess_docstring,
     )
@@ -58,8 +80,8 @@ def test_docs_in_custom_destination_dir(tmpdir):
     for file_path in get_all_files(tmpdir):
         text.append(file_path.read_text())
     text = "\n".join(text)
-    assert "keras_applications" not in text
-    assert "keras_preprocessing" not in text
+    assert "keras_applications." not in text
+    assert "keras_preprocessing." not in text
     assert "keras.layers.core" not in text
     assert "layers.pooling" not in text
     assert "utils.np_utils" not in text

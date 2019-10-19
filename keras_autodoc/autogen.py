@@ -9,16 +9,15 @@ from .get_signatures import get_class_signature, get_function_signature
 from . import utils
 
 
-def render_function(function, clean_module_name, post_process_signature,
+def render_function(function, post_process_signature,
                     preprocess_docstring=None,
                     method=True):
     subblocks = []
     signature = get_function_signature(
-        function, clean_module_name, post_process_signature, method=method
+        function, post_process_signature, method=method
     )
     if method:
-        signature = signature.replace(clean_module_name(function.__module__) + ".",
-                                      "")
+        signature = signature.replace(function.__module__ + ".", "")
     subblocks.append(f"### {function.__name__}\n")
     subblocks.append(utils.code_snippet(signature))
     docstring = function.__doc__
@@ -66,14 +65,11 @@ def collect_class_methods(cls, methods, exclude):
     return methods
 
 
-def get_class_and_methods(element, clean_module_name, post_process_signature,
-                          project_url, exclude):
+def get_class_and_methods(element, post_process_signature, project_url, exclude):
     cls = element[0]
     subblocks = []
-    signature = get_class_signature(
-        cls, clean_module_name, post_process_signature
-    )
-    subblocks.append(utils.make_source_link(cls, clean_module_name, project_url))
+    signature = get_class_signature(cls, post_process_signature)
+    subblocks.append(utils.make_source_link(cls, project_url))
     if element[1]:
         subblocks.append(f"## {cls.__name__} class\n")
     else:
@@ -89,12 +85,7 @@ def get_class_and_methods(element, clean_module_name, post_process_signature,
         subblocks.append(
             "\n---\n".join(
                 [
-                    render_function(
-                        method,
-                        clean_module_name,
-                        post_process_signature,
-                        method=True,
-                    )
+                    render_function(method, post_process_signature, method=True)
                     for method in methods
                 ]
             )
@@ -104,7 +95,6 @@ def get_class_and_methods(element, clean_module_name, post_process_signature,
 
 def generate_markdown(page,
                       exclude,
-                      clean_module_name,
                       post_process_signature,
                       project_url,
                       preprocess_docstring):
@@ -113,20 +103,18 @@ def generate_markdown(page,
 
     blocks = []
     for element in classes:
-        subblocks = get_class_and_methods(element, clean_module_name,
+        subblocks = get_class_and_methods(element,
                                           post_process_signature, project_url,
                                           exclude)
         block = "\n".join(subblocks)
         blocks.append(block)
 
     for method in methods:
-        block = render_function(method, clean_module_name,
-                                post_process_signature, method=True)
+        block = render_function(method, post_process_signature, method=True)
         blocks.append(block)
 
     for function in functions:
         block = render_function(function,
-                                clean_module_name,
                                 post_process_signature,
                                 preprocess_docstring,
                                 method=False)
@@ -146,7 +134,6 @@ def generate(
     project_url,
     examples_dir=None,
     exclude=None,
-    clean_module_name=lambda x: x,
     post_process_signature=lambda x: x,
     preprocess_docstring=None,
 ):
@@ -171,7 +158,6 @@ def generate(
     for page in pages:
         mkdown = generate_markdown(page,
                                    exclude,
-                                   clean_module_name,
                                    post_process_signature,
                                    project_url,
                                    preprocess_docstring)

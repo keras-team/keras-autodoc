@@ -2,7 +2,7 @@ import inspect
 import warnings
 
 
-def get_signature_start(function, clean_module_name):
+def get_signature_start(function):
     """For the Dense layer, it should return the string 'keras.layers.Dense'"""
     try:
         function_module = function.__module__
@@ -11,7 +11,7 @@ def get_signature_start(function, clean_module_name):
                       f'It will not be included in the signature.')
         function_module = ''
     else:
-        function_module = f'{clean_module_name(function_module)}.'
+        function_module = f'{function_module}.'
     return f'{function_module}{function.__name__}'
 
 
@@ -27,9 +27,7 @@ def get_signature_end(args, kwargs):
     return f'({all_args_str})'
 
 
-def get_function_signature(
-    function, clean_module_name, post_process_signature, method=True
-):
+def get_function_signature(function, post_process_signature, method=True):
     original_function = getattr(function, "_original_function", function)
     signature = inspect.getfullargspec(original_function)
     args = list(signature.args)
@@ -39,12 +37,12 @@ def get_function_signature(
     kwargs = zip(args[-len(defaults):], defaults)
     args = args[: len(args)-len(defaults)]
 
-    signature_start = get_signature_start(function, clean_module_name)
+    signature_start = get_signature_start(function)
     signature_end = get_signature_end(args, kwargs)
     return post_process_signature(signature_start + signature_end)
 
 
-def get_class_signature(cls, clean_module_name, post_process_signature):
+def get_class_signature(cls, post_process_signature):
     try:
         init_method = cls.__init__
     except (TypeError, AttributeError):
@@ -53,7 +51,7 @@ def get_class_signature(cls, clean_module_name, post_process_signature):
         class_signature = f"{cls.__module__}.{cls.__name__}()"
     else:
         class_signature = get_function_signature(
-            init_method, clean_module_name, post_process_signature
+            init_method, post_process_signature
         )
         class_signature = class_signature.replace("__init__", cls.__name__)
     return post_process_signature(class_signature)
