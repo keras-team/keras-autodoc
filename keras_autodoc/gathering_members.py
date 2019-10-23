@@ -3,12 +3,14 @@ import inspect
 
 def get_classes(module, exclude=None):
     exclude = exclude or []
-    return _get_all_module_element(module, 'classes', exclude)
+    all_elements = _get_all_module_element(module, exclude)
+    return list(filter(inspect.isclass, all_elements))
 
 
 def get_functions(module, exclude=None):
     exclude = exclude or []
-    return _get_all_module_element(module, 'functions', exclude)
+    all_elements = _get_all_module_element(module, exclude)
+    return list(filter(inspect.isfunction, all_elements))
 
 
 def get_methods(cls, exclude=None):
@@ -21,21 +23,16 @@ def get_methods(cls, exclude=None):
     return methods
 
 
-def _get_all_module_element(module, element_type, exclude):
+def _get_all_module_element(module, exclude):
     module_data = []
     for name in dir(module):
+        module_member = getattr(module, name)
         if name[0] == "_" or name in exclude:
             continue
-        module_member = getattr(module, name)
-        if (
-                inspect.isclass(module_member)
-                and element_type == "classes"
-                or inspect.isfunction(module_member)
-                and element_type == "functions"
-        ):
-            instance = module_member
-            if module.__name__ in instance.__module__:
-                if instance not in module_data:
-                    module_data.append(instance)
+        if module.__name__ not in module_member.__module__:
+            continue
+        if module_member in module_data:
+            continue
+        module_data.append(module_member)
     module_data.sort(key=id)
     return module_data
