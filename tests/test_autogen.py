@@ -1,5 +1,6 @@
 from markdown import markdown
 from keras_autodoc import autogen
+from keras_autodoc import get_methods
 import pytest
 import pathlib
 from .dummy_package import dummy_module
@@ -390,9 +391,10 @@ def test_doc_multiple_sections_code():
 
 
 def test_generate_markdown():
+    methods = get_methods(dummy_module.ImageDataGenerator)
     page = dict(
         page='dummy.md',
-        classes=[dummy_module.Dense, (dummy_module.ImageDataGenerator, '*')],
+        classes=[dummy_module.Dense, (dummy_module.ImageDataGenerator, methods)],
         functions=[dummy_module.to_categorical]
     )
 

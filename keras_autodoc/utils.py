@@ -45,7 +45,7 @@ def make_source_link(cls, project_url):
             f'</span>')
 
 
-def format_page_values(classes, methods, functions, name):
+def format_classes_list(classes, page_name):
     for i in range(len(classes)):
         if not isinstance(classes[i], (list, tuple)):
             classes[i] = (classes[i], [])
@@ -53,4 +53,5 @@ def format_page_values(classes, methods, functions, name):
         if not inspect.isclass(class_):
             # TODO: add a test for this
             raise TypeError(f'{class_} was given in the class list '
-                            f'of {name} but {class_} is not a Python class.')
+                            f'of {page_name} but {class_} is not a Python class.')
+    return classes

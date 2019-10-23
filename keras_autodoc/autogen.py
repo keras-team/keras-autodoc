@@ -1,6 +1,5 @@
 import shutil
 import pathlib
-import inspect
 
 from .docstring import process_docstring
 from .examples import copy_examples
@@ -22,13 +21,11 @@ class DocumentationGenerator:
                  pages=None,
                  project_url=None,
                  template_dir=None,
-                 examples_dir=None,
-                 exclude=None):
+                 examples_dir=None):
         self.template_dir = to_path(template_dir)
         self.pages = pages
         self.project_url = project_url
         self.examples_dir = to_path(examples_dir)
-        self.exclude = exclude or []
 
     def generate(self, dest_dir):
         dest_dir = pathlib.Path(dest_dir)
@@ -59,20 +56,19 @@ class DocumentationGenerator:
         return signature
 
     def _generate_markdown(self, page):
-        classes, methods, functions = read_page_data(page, self.exclude)
-        utils.format_page_values(classes, methods, functions, name=page['page'])
-
         blocks = []
-        for element in classes:
-            subblocks = self._get_class_and_methods(element)
+        classes = page.get('classes', [])
+        page_name = page['page']
+        for cls, methods in utils.format_classes_list(classes, page_name):
+            subblocks = self._format_class_and_methods(cls, methods)
             block = "\n".join(subblocks)
             blocks.append(block)
 
-        for method in methods:
+        for method in page.get('methods', []):
             block = self._render_function(method, method=True)
             blocks.append(block)
 
-        for function in functions:
+        for function in page.get('functions', []):
             block = self._render_function(function)
             blocks.append(block)
 
@@ -101,12 +97,11 @@ class DocumentationGenerator:
             subblocks.append(docstring)
         return "\n\n".join(subblocks)
 
-    def _get_class_and_methods(self, element):
-        cls = element[0]
+    def _format_class_and_methods(self, cls, methods):
         subblocks = []
         if self.project_url is not None:
             subblocks.append(utils.make_source_link(cls, self.project_url))
-        if element[1]:
+        if methods:
             subblocks.append(f"## {cls.__name__} class\n")
         else:
             subblocks.append(f"### {cls.__name__}\n")
@@ -115,7 +110,6 @@ class DocumentationGenerator:
         docstring = cls.__doc__
         if docstring:
             subblocks.append(self.process_class_docstring(docstring, cls))
-        methods = collect_class_methods(cls, element[1], self.exclude)
         if methods:
             subblocks.append("\n---")
             subblocks.append(f"## {cls.__name__} methods\n")
@@ -128,40 +122,3 @@ class DocumentationGenerator:
                 )
             )
         return subblocks
-
-
-def read_page_data(page_data, exclude):
-    data_types = []
-    for type_ in ["classes", "methods", "functions"]:
-        data = page_data.get(type_, [])
-        for module in page_data.get(f"all_module_{type_}", []):
-            module_data = []
-            for name in dir(module):
-                if name[0] == "_" or name in exclude:
-                    continue
-                module_member = getattr(module, name)
-                if (
-                    inspect.isclass(module_member)
-                    and type_ == "classes"
-                    or inspect.isfunction(module_member)
-                    and type_ == "functions"
-                ):
-                    instance = module_member
-                    if module.__name__ in instance.__module__:
-                        if instance not in module_data:
-                            module_data.append(instance)
-            module_data.sort(key=id)
-            data += module_data
-        data_types.append(data)
-    return data_types
-
-
-def collect_class_methods(cls, methods, exclude):
-    if isinstance(methods, (list, tuple)):
-        return [getattr(cls, m) if isinstance(m, str) else m for m in methods]
-    methods = []
-    for _, method in inspect.getmembers(cls, predicate=inspect.isroutine):
-        if method.__name__[0] == "_" or method.__name__ in exclude:
-            continue
-        methods.append(method)
-    return methods
