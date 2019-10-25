@@ -1,5 +1,6 @@
 import shutil
 import pathlib
+from inspect import isclass, isfunction
 from typing import Dict, Union
 
 from .docstring import process_docstring
@@ -12,7 +13,7 @@ from . import utils
 class DocumentationGenerator:
 
     def __init__(self,
-                 pages=None,
+                 pages: Dict[str, list] = None,
                  project_url: Union[str, Dict[str, str]] = None,
                  template_dir: pathlib.Path = None,
                  examples_dir: pathlib.Path = None):
@@ -29,9 +30,11 @@ class DocumentationGenerator:
         print("Populating sources directory with templates.")
         shutil.copytree(self.template_dir, dest_dir)
 
-        for page in self.pages:
-            mkdown = self._generate_markdown(page)
-            utils.insert_in_file(mkdown, dest_dir / page["page"])
+        for file_path, elements in self.pages.items():
+            markdown_text = ''
+            for element in elements:
+                markdown_text += self._render(element)
+            utils.insert_in_file(markdown_text, dest_dir / file_path)
 
         if self.examples_dir is not None:
             copy_examples(self.examples_dir, dest_dir / "examples")
@@ -48,70 +51,53 @@ class DocumentationGenerator:
     def process_signature(self, signature):
         return signature
 
-    def _generate_markdown(self, page):
-        blocks = []
-        classes = page.get('classes', [])
-        page_name = page['page']
-        for cls, methods in utils.format_classes_list(classes, page_name):
-            subblocks = self._format_class_and_methods(cls, methods)
-            block = "\n".join(subblocks)
-            blocks.append(block)
+    def _render(self, element):
+        if isinstance(element, str):
+            return element
+        elif isclass(element):
+            return self._render_class(element)
+        elif utils.ismethod(element):
+            return self._render_method(element)
+        elif isfunction(element):
+            return self._render_function(element)
+        else:
+            raise TypeError(f'Object {element} with type {type(element)}'
+                            f' is not a class nor a function.')
 
-        for method in page.get('methods', []):
-            block = self._render_function(method, method=True)
-            blocks.append(block)
-
-        for function in page.get('functions', []):
-            block = self._render_function(function)
-            blocks.append(block)
-
-        if not blocks:
-            raise RuntimeError("Found no content for page " + page["page"])
-
-        mkdown = "\n----\n\n".join(blocks)
-        return mkdown
-
-    def _render_function(self, function, method=False):
-        subblocks = []
-        signature = self.process_signature(get_function_signature(
-            function, method=method
-        ))
-        if method:
-            signature = signature.replace(function.__module__ + ".", "")
-        subblocks.append(f"### {function.__name__}\n")
-        subblocks.append(utils.code_snippet(signature))
-
-        docstring = function.__doc__
-        if docstring:
-            if method:
-                docstring = self.process_method_docstring(docstring, function)
-            else:
-                docstring = self.process_function_docstring(docstring, function)
-            subblocks.append(docstring)
-        return "\n\n".join(subblocks)
-
-    def _format_class_and_methods(self, cls, methods):
+    def _render_class(self, cls):
         subblocks = []
         if self.project_url is not None:
             subblocks.append(utils.make_source_link(cls, self.project_url))
-        if methods:
-            subblocks.append(f"## {cls.__name__} class\n")
-        else:
-            subblocks.append(f"### {cls.__name__}\n")
+        subblocks.append(f"### {cls.__name__} class:\n")
+
         signature = self.process_signature(get_class_signature(cls))
         subblocks.append(utils.code_snippet(signature))
         docstring = cls.__doc__
         if docstring:
             subblocks.append(self.process_class_docstring(docstring, cls))
-        if methods:
-            subblocks.append("\n---")
-            subblocks.append(f"## {cls.__name__} methods\n")
-            subblocks.append(
-                "\n---\n".join(
-                    [
-                        self._render_function(method, method=True)
-                        for method in methods
-                    ]
-                )
-            )
-        return subblocks
+        return '\n'.join(subblocks) + '\n----\n\n'
+
+    def _render_method(self, method):
+
+        subblocks = []
+        signature = self.process_signature(get_function_signature(method))
+        subblocks.append(f"### {method.__name__} method:\n")
+        subblocks.append(utils.code_snippet(signature))
+
+        docstring = method.__doc__
+        if docstring:
+            docstring = self.process_method_docstring(docstring, method)
+            subblocks.append(docstring)
+        return "\n\n".join(subblocks) + '\n----\n\n'
+
+    def _render_function(self, function):
+        subblocks = []
+        signature = self.process_signature(get_function_signature(function))
+        subblocks.append(f"### {function.__name__} function:\n")
+        subblocks.append(utils.code_snippet(signature))
+
+        docstring = function.__doc__
+        if docstring:
+            docstring = self.process_function_docstring(docstring, function)
+            subblocks.append(docstring)
+        return "\n\n".join(subblocks) + '\n----\n\n'

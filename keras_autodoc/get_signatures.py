@@ -1,44 +1,34 @@
-import inspect
 import warnings
+from sphinx.util.inspect import Signature
+from . import utils
 
 
 def get_signature_start(function):
     """For the Dense layer, it should return the string 'keras.layers.Dense'"""
-    try:
-        function_module = function.__module__
-    except AttributeError:
-        warnings.warn(f'function {function} has no module. '
-                      f'It will not be included in the signature.')
-        function_module = ''
+    if utils.ismethod(function):
+        prefix = f'{utils.get_class_from_method(function).__name__}.'
     else:
-        function_module = f'{function_module}.'
-    return f'{function_module}{function.__name__}'
+        try:
+            prefix = f'{function.__module__}.'
+        except AttributeError:
+            warnings.warn(f'function {function} has no module. '
+                          f'It will not be included in the signature.')
+            prefix = ''
+
+    return f'{prefix}{function.__name__}'
 
 
-def get_signature_end(args, kwargs):
-    kwargs_formatted = []
-    for a, v in kwargs:
-        if isinstance(v, str):
-            v = f"'{v}'"
-        kwargs_formatted.append(f'{a}={v}')
-
-    all_args_str = map(str, args + kwargs_formatted)
-    all_args_str = ', '.join(all_args_str)
-    return f'({all_args_str})'
+def get_signature_end(function):
+    signature_end = Signature(function).format_args()
+    if utils.ismethod(function):
+        signature_end = signature_end.replace('(self, ', '(')
+        signature_end = signature_end.replace('(self)', '()')
+    return signature_end
 
 
-def get_function_signature(function, method=False):
-    original_function = getattr(function, "_original_function", function)
-    signature = inspect.getfullargspec(original_function)
-    args = list(signature.args)
-    if method and args and args[0] == 'self':
-        args.pop(0)
-    defaults = signature.defaults or []
-    kwargs = zip(args[-len(defaults):], defaults)
-    args = args[: len(args)-len(defaults)]
-
+def get_function_signature(function):
     signature_start = get_signature_start(function)
-    signature_end = get_signature_end(args, kwargs)
+    signature_end = get_signature_end(function)
     return signature_start + signature_end
 
 
@@ -48,8 +38,8 @@ def get_class_signature(cls):
     except (TypeError, AttributeError):
         # in case the class inherits from object and does not
         # define __init__
-        class_signature = f"{cls.__module__}.{cls.__name__}()"
+        signature_end = '()'
     else:
-        class_signature = get_function_signature(init_method, method=True)
-        class_signature = class_signature.replace("__init__", cls.__name__)
+        signature_end = get_signature_end(init_method)
+        class_signature = f"{cls.__module__}.{cls.__name__}{signature_end}"
     return class_signature

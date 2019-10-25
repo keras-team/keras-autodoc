@@ -392,16 +392,16 @@ def test_doc_multiple_sections_code():
 
 def test_generate_markdown():
     methods = get_methods(dummy_module.ImageDataGenerator)
-    page = dict(
-        page='dummy.md',
-        classes=[dummy_module.Dense, (dummy_module.ImageDataGenerator, methods)],
-        functions=[dummy_module.to_categorical]
-    )
+    elements = [dummy_module.Dense, dummy_module.ImageDataGenerator]
+    elements += methods
+    elements.append(dummy_module.to_categorical)
 
     doc_generator = autogen.DocumentationGenerator(
         project_url='www.dummy.com/my_project'
     )
-    markdown_text = doc_generator._generate_markdown(page)
+    markdown_text = ''
+    for element in elements:
+        markdown_text += doc_generator._render(element)
 
     current_file_path = pathlib.Path(__file__).resolve()
     expected_file = current_file_path.parent / 'dummy_package' / 'expected.md'
