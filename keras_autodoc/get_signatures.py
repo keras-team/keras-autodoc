@@ -33,13 +33,6 @@ def get_function_signature(function):
 
 
 def get_class_signature(cls):
-    try:
-        init_method = cls.__init__
-    except (TypeError, AttributeError):
-        # in case the class inherits from object and does not
-        # define __init__
-        signature_end = '()'
-    else:
-        signature_end = get_signature_end(init_method)
-        class_signature = f"{cls.__module__}.{cls.__name__}{signature_end}"
+    signature_end = get_signature_end(cls.__init__)
+    class_signature = f"{cls.__module__}.{cls.__name__}{signature_end}"
     return class_signature
