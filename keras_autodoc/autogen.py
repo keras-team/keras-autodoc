@@ -1,5 +1,6 @@
 import shutil
 import pathlib
+from typing import Dict, Union
 
 from .docstring import process_docstring
 from .examples import copy_examples
@@ -8,27 +9,19 @@ from .get_signatures import get_class_signature, get_function_signature
 from . import utils
 
 
-def to_path(path):
-    if path is None:
-        return None
-    else:
-        return pathlib.Path(path)
-
-
 class DocumentationGenerator:
 
     def __init__(self,
                  pages=None,
-                 project_url=None,
-                 template_dir=None,
-                 examples_dir=None):
-        self.template_dir = to_path(template_dir)
+                 project_url: Union[str, Dict[str, str]] = None,
+                 template_dir: pathlib.Path = None,
+                 examples_dir: pathlib.Path = None):
+        self.template_dir = template_dir
         self.pages = pages
         self.project_url = project_url
-        self.examples_dir = to_path(examples_dir)
+        self.examples_dir = examples_dir
 
-    def generate(self, dest_dir):
-        dest_dir = pathlib.Path(dest_dir)
+    def generate(self, dest_dir: pathlib.Path):
         print("Cleaning up existing sources directory.")
         if dest_dir.exists():
             shutil.rmtree(dest_dir)

@@ -1,13 +1,14 @@
 import inspect
+from types import ModuleType
 
 
-def get_classes(module, exclude=None):
+def get_classes(module: ModuleType, exclude=None):
     exclude = exclude or []
     all_elements = _get_all_module_element(module, exclude)
     return list(filter(inspect.isclass, all_elements))
 
 
-def get_functions(module, exclude=None):
+def get_functions(module: ModuleType, exclude=None):
     exclude = exclude or []
     all_elements = _get_all_module_element(module, exclude)
     return list(filter(inspect.isfunction, all_elements))
