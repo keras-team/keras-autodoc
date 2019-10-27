@@ -6,7 +6,6 @@ from . import utils
 def process_list_block(docstring,
                        starting_point,
                        section_end,
-                       leading_spaces,
                        marker):
     ending_point = docstring.find("\n\n", starting_point)
     block = docstring[
@@ -18,8 +17,6 @@ def process_list_block(docstring,
                  + docstring_slice
                  + docstring[section_end:])
     lines = block.split("\n")
-    # Remove the computed number of leading white spaces from each line.
-    lines = [re.sub("^" + " " * leading_spaces, "", line) for line in lines]
     # Usually lines have at least 4 additional leading spaces.
     # These have to be removed, but first the list roots have to be detected.
     top_level_regex = r"^    ([^\s\\\(]+):(.*)"
@@ -97,13 +94,12 @@ def get_code_blocks(docstring):
 
 def get_sections(docstring):
     # Format docstring lists.
-    section_regex = r"\n( *)# (.*)\n"
+    section_regex = r"\n# (.*)\n"
     section_idx = re.search(section_regex, docstring)
     shift = 0
     sections = {}
-    while section_idx and section_idx.group(2):
-        anchor = section_idx.group(2)
-        leading_spaces = len(section_idx.group(1))
+    while section_idx and section_idx.group(1):
+        anchor = section_idx.group(1)
         shift += section_idx.end()
         next_section_idx = re.search(section_regex, docstring[shift:])
         if next_section_idx is None:
@@ -112,7 +108,7 @@ def get_sections(docstring):
             section_end = shift + next_section_idx.start()
         marker = "$" + anchor.replace(" ", "_") + "$"
         docstring, content = process_list_block(
-            docstring, shift, section_end, leading_spaces, marker
+            docstring, shift, section_end, marker
         )
         sections[marker] = content
         # `docstring` has changed, so we can't use `next_section_idx` anymore
