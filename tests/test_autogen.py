@@ -329,7 +329,6 @@ y = layer(x)
 """,
 }
 
-
 test_doc_with_arguments_as_last_block = {
     "doc": """Base class for recurrent layers.
 
@@ -390,12 +389,7 @@ def test_doc_multiple_sections_code():
     assert "def dot(x, y):" in generated
 
 
-def test_generate_markdown():
-    methods = get_methods(dummy_module.ImageDataGenerator)
-    elements = [dummy_module.Dense, dummy_module.ImageDataGenerator]
-    elements += methods
-    elements.append(dummy_module.to_categorical)
-
+def check_against_expected(elements):
     doc_generator = autogen.DocumentationGenerator(
         project_url='www.dummy.com/my_project'
     )
@@ -409,6 +403,46 @@ def test_generate_markdown():
     # we check that the generated html is the same
     # to ignore blank lines or other differences not relevant.
     assert markdown(markdown_text) == markdown(expected_text)
+
+
+def test_generate_markdown():
+    elements = [dummy_module.Dense, dummy_module.ImageDataGenerator]
+    elements += get_methods(dummy_module.ImageDataGenerator)
+    elements.append(dummy_module.to_categorical)
+    check_against_expected(elements)
+
+
+def test_generate_markdown_from_string():
+    elements = [
+        'tests.dummy_package.dummy_module.Dense',
+        'tests.dummy_package.dummy_module.ImageDataGenerator',
+        'tests.dummy_package.dummy_module.ImageDataGenerator.flow',
+        'tests.dummy_package.dummy_module.ImageDataGenerator.flow_from_directory',
+        'tests.dummy_package.dummy_module.to_categorical'
+    ]
+    check_against_expected(elements)
+
+
+@pytest.mark.parametrize('element', [
+    'tests.dummy_package.DataGenerator',
+    'tests.dummy_package.to_categorical'
+])
+def test_aliases_class_function(element):
+    doc_generator = autogen.DocumentationGenerator()
+    computed = doc_generator._render(element)
+    expected = element + '('
+    assert expected in computed
+
+
+@pytest.mark.parametrize(['element', 'expected'], [
+    ('tests.dummy_package.DataGenerator.flow', '\nDataGenerator.flow('),
+    ('tests.dummy_package.DataGenerator.flow_from_directory',
+     '\nDataGenerator.flow_from_directory('),
+])
+def test_aliases_methods(element, expected):
+    doc_generator = autogen.DocumentationGenerator()
+    computed = doc_generator._render(element)
+    assert expected in computed
 
 
 if __name__ == "__main__":

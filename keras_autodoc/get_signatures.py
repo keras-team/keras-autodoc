@@ -26,13 +26,20 @@ def get_signature_end(function):
     return signature_end
 
 
-def get_function_signature(function):
-    signature_start = get_signature_start(function)
+def get_function_signature(function, override=None):
+    if override is None:
+        signature_start = get_signature_start(function)
+    else:
+        signature_start = override
     signature_end = get_signature_end(function)
     return signature_start + signature_end
 
 
-def get_class_signature(cls):
+def get_class_signature(cls, override=None):
+    if override is None:
+        signature_start = f'{cls.__module__}.{cls.__name__}'
+    else:
+        signature_start = override
     signature_end = get_signature_end(cls.__init__)
-    class_signature = f"{cls.__module__}.{cls.__name__}{signature_end}"
+    class_signature = signature_start + signature_end
     return class_signature

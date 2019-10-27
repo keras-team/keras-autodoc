@@ -5,7 +5,7 @@ from typing import Dict, Union
 
 from .docstring import process_docstring
 from .examples import copy_examples
-from .get_signatures import get_class_signature, get_function_signature
+from .get_signatures import get_function_signature, get_class_signature
 
 from . import utils
 
@@ -53,34 +53,40 @@ class DocumentationGenerator:
 
     def _render(self, element):
         if isinstance(element, str):
+            signature_override = element
             element = utils.import_object(element)
+        else:
+            signature_override = None
         if isclass(element):
-            return self._render_class(element)
+            return self._render_class(element, signature_override)
         elif utils.ismethod(element):
-            return self._render_method(element)
+            if signature_override is not None:
+                signature_override = '.'.join(signature_override.split('.')[-2:])
+            return self._render_method(element, signature_override)
         elif isfunction(element):
-            return self._render_function(element)
+            return self._render_function(element, signature_override)
         else:
             raise TypeError(f'Object {element} with type {type(element)}'
                             f' is not a class nor a function.')
 
-    def _render_class(self, cls):
+    def _render_class(self, cls, signature_override=None):
         subblocks = []
         if self.project_url is not None:
             subblocks.append(utils.make_source_link(cls, self.project_url))
         subblocks.append(f"### {cls.__name__} class:\n")
 
-        signature = self.process_signature(get_class_signature(cls))
+        signature = get_class_signature(cls, signature_override)
+        signature = self.process_signature(signature)
         subblocks.append(utils.code_snippet(signature))
         docstring = cls.__doc__
         if docstring:
             subblocks.append(self.process_class_docstring(docstring, cls))
         return '\n'.join(subblocks) + '\n----\n\n'
 
-    def _render_method(self, method):
-
+    def _render_method(self, method, signature_override=None):
         subblocks = []
-        signature = self.process_signature(get_function_signature(method))
+        signature = get_function_signature(method, signature_override)
+        signature = self.process_signature(signature)
         subblocks.append(f"### {method.__name__} method:\n")
         subblocks.append(utils.code_snippet(signature))
 
@@ -90,9 +96,10 @@ class DocumentationGenerator:
             subblocks.append(docstring)
         return "\n\n".join(subblocks) + '\n----\n\n'
 
-    def _render_function(self, function):
+    def _render_function(self, function, signature_override=None):
         subblocks = []
-        signature = self.process_signature(get_function_signature(function))
+        signature = get_function_signature(function, signature_override)
+        signature = self.process_signature(signature)
         subblocks.append(f"### {function.__name__} function:\n")
         subblocks.append(utils.code_snippet(signature))
 
