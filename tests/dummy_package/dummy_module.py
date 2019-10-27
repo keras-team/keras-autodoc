@@ -188,7 +188,9 @@ class ImageDataGenerator:
         interpolation_order: int, order to use for
             the spline interpolation. Higher is slower.
         dtype: Dtype to use for the generated arrays.
+
     # Examples
+
     Example of using `.flow(x, y)`:
     ```python
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()

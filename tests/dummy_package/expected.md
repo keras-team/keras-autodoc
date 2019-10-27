@@ -69,7 +69,7 @@ __Output shape__
 nD tensor with shape: `(batch_size, ..., units)`.
 For instance, for a 2D input with shape `(batch_size, input_dim)`,
 the output would have shape `(batch_size, units)`.
-    
+
 ----
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L113)</span>
@@ -157,7 +157,9 @@ __Arguments__
 - __interpolation_order__: int, order to use for
     the spline interpolation. Higher is slower.
 - __dtype__: Dtype to use for the generated arrays.
+
 __Examples__
+
 
 Example of using `.flow(x, y)`:
 ```python
@@ -278,7 +280,7 @@ model.fit_generator(
         validation_data=validation_generator,
         validation_steps=800)
 ```
-    
+
 ----
 
 ### flow method:
@@ -332,7 +334,7 @@ An `Iterator` yielding tuples of `(x, y)`
     of corresponding labels. If 'sample_weight' is not None,
     the yielded tuples are of the form `(x, y, sample_weight)`.
     If `y` is None, only the numpy array `x` is returned.
-    
+
 ----
 
 ### flow_from_directory method:
@@ -418,7 +420,7 @@ A `DirectoryIterator` yielding tuples of `(x, y)`
     where `x` is a numpy array containing a batch
     of images with shape `(batch_size, *target_size, channels)`
     and `y` is a numpy array of corresponding labels.
-    
+
 ----
 
 ### to_categorical function:
@@ -463,6 +465,6 @@ array([[ 1.,  0.,  0.],
        [ 0.,  0.,  1.],
        [ 1.,  0.,  0.]], dtype=float32)
 ```
-    
+
 ----
 

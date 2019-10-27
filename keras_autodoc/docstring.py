@@ -97,7 +97,7 @@ def get_code_blocks(docstring):
 
 def get_sections(docstring):
     # Format docstring lists.
-    section_regex = r"\n( +)# (.*)\n"
+    section_regex = r"\n( *)# (.*)\n"
     section_idx = re.search(section_regex, docstring)
     shift = 0
     sections = {}

@@ -1,6 +1,6 @@
 import shutil
 import pathlib
-from inspect import isclass, isfunction
+from inspect import isclass, isfunction, getdoc
 from typing import Dict, Union
 
 from .docstring import process_docstring
@@ -78,10 +78,10 @@ class DocumentationGenerator:
         signature = get_class_signature(cls, signature_override)
         signature = self.process_signature(signature)
         subblocks.append(utils.code_snippet(signature))
-        docstring = cls.__doc__
+        docstring = getdoc(cls)
         if docstring:
             subblocks.append(self.process_class_docstring(docstring, cls))
-        return '\n'.join(subblocks) + '\n----\n\n'
+        return '\n'.join(subblocks) + '\n\n----\n\n'
 
     def _render_method(self, method, signature_override=None):
         subblocks = []
@@ -90,11 +90,11 @@ class DocumentationGenerator:
         subblocks.append(f"### {method.__name__} method:\n")
         subblocks.append(utils.code_snippet(signature))
 
-        docstring = method.__doc__
+        docstring = getdoc(method)
         if docstring:
             docstring = self.process_method_docstring(docstring, method)
             subblocks.append(docstring)
-        return "\n\n".join(subblocks) + '\n----\n\n'
+        return "\n\n".join(subblocks) + '\n\n----\n\n'
 
     def _render_function(self, function, signature_override=None):
         subblocks = []
@@ -103,8 +103,8 @@ class DocumentationGenerator:
         subblocks.append(f"### {function.__name__} function:\n")
         subblocks.append(utils.code_snippet(signature))
 
-        docstring = function.__doc__
+        docstring = getdoc(function)
         if docstring:
             docstring = self.process_function_docstring(docstring, function)
             subblocks.append(docstring)
-        return "\n\n".join(subblocks) + '\n----\n\n'
+        return "\n\n".join(subblocks) + '\n\n----\n\n'
