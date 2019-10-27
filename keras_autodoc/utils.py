@@ -87,16 +87,12 @@ def import_object(string: str):
     The object can be a function, class or method.
     For example: `'keras.layers.Dense.get_weights'` is valid.
     """
-    splitted = string.split('.')
-    last_module = None
-    for i in range(1, len(splitted) + 1):
+    last_object_got = None
+    seen_names = []
+    for name in string.split('.'):
+        seen_names.append(name)
         try:
-            module_name = '.'.join(splitted[:i])
-            last_module = importlib.import_module(module_name)
+            last_object_got = importlib.import_module('.'.join(seen_names))
         except ModuleNotFoundError:
-            # we've encountered a class or function.
-            break
-    last_object = last_module
-    for j in range(i - 1, len(splitted)):
-        last_object = getattr(last_object, splitted[j])
-    return last_object
+            last_object_got = getattr(last_object_got, name)
+    return last_object_got
