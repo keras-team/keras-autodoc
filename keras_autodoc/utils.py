@@ -1,6 +1,7 @@
 import re
 import os
 import inspect
+import importlib
 
 
 def count_leading_spaces(s):
@@ -78,3 +79,24 @@ def get_class_from_method(meth):
 
 def ismethod(function):
     return get_class_from_method(function) is not None
+
+
+def import_object(string: str):
+    """Import an object from a string.
+
+    The object can be a function, class or method.
+    For example: `'keras.layers.Dense.get_weights'` is valid.
+    """
+    splitted = string.split('.')
+    last_module = None
+    for i in range(1, len(splitted) + 1):
+        try:
+            module_name = '.'.join(splitted[:i])
+            last_module = importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            # we've encountered a class or function.
+            break
+    last_object = last_module
+    for j in range(i - 1, len(splitted)):
+        last_object = getattr(last_object, splitted[j])
+    return last_object

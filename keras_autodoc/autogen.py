@@ -53,8 +53,8 @@ class DocumentationGenerator:
 
     def _render(self, element):
         if isinstance(element, str):
-            return element
-        elif isclass(element):
+            element = utils.import_object(element)
+        if isclass(element):
             return self._render_class(element)
         elif utils.ismethod(element):
             return self._render_method(element)
