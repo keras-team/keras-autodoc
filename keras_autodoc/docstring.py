@@ -54,42 +54,41 @@ def process_list_block(docstring,
 def process_docstring(docstring):
     # First, extract code blocks and process them.
     code_blocks = []
-    if "```" in docstring:
-        tmp = docstring[:]
-        while "```" in tmp:
-            tmp = tmp[tmp.find("```"):]
-            index = tmp[3:].find("```") + 6
-            snippet = tmp[:index]
-            # Place marker in docstring for later reinjection.
-            docstring = docstring.replace(snippet,
-                                          "$CODE_BLOCK_%d" % len(code_blocks))
-            snippet_lines = snippet.split("\n")
-            # Remove leading spaces.
-            num_leading_spaces = snippet_lines[-1].find("`")
-            snippet_lines = [snippet_lines[0]] + [
-                line[num_leading_spaces:] for line in snippet_lines[1:]
-            ]
-            # Most code snippets have 3 or 4 more leading spaces
-            # on inner lines, but not all. Remove them.
-            inner_lines = snippet_lines[1:-1]
-            leading_spaces = None
-            for line in inner_lines:
-                if not line or line[0] == "\n":
-                    continue
-                spaces = utils.count_leading_spaces(line)
-                if leading_spaces is None:
-                    leading_spaces = spaces
-                if spaces < leading_spaces:
-                    leading_spaces = spaces
-            if leading_spaces:
-                snippet_lines = (
-                    [snippet_lines[0]]
-                    + [line[leading_spaces:] for line in snippet_lines[1:-1]]
-                    + [snippet_lines[-1]]
-                )
-            snippet = "\n".join(snippet_lines)
-            code_blocks.append(snippet)
-            tmp = tmp[index:]
+    tmp = docstring[:]
+    while "```" in tmp:
+        tmp = tmp[tmp.find("```"):]
+        index = tmp[3:].find("```") + 6
+        snippet = tmp[:index]
+        # Place marker in docstring for later reinjection.
+        docstring = docstring.replace(snippet,
+                                      "$CODE_BLOCK_%d" % len(code_blocks))
+        snippet_lines = snippet.split("\n")
+        # Remove leading spaces.
+        num_leading_spaces = snippet_lines[-1].find("`")
+        snippet_lines = [snippet_lines[0]] + [
+            line[num_leading_spaces:] for line in snippet_lines[1:]
+        ]
+        # Most code snippets have 3 or 4 more leading spaces
+        # on inner lines, but not all. Remove them.
+        inner_lines = snippet_lines[1:-1]
+        leading_spaces = None
+        for line in inner_lines:
+            if not line or line[0] == "\n":
+                continue
+            spaces = utils.count_leading_spaces(line)
+            if leading_spaces is None:
+                leading_spaces = spaces
+            if spaces < leading_spaces:
+                leading_spaces = spaces
+        if leading_spaces:
+            snippet_lines = (
+                [snippet_lines[0]]
+                + [line[leading_spaces:] for line in snippet_lines[1:-1]]
+                + [snippet_lines[-1]]
+            )
+        snippet = "\n".join(snippet_lines)
+        code_blocks.append(snippet)
+        tmp = tmp[index:]
 
     # Format docstring lists.
     section_regex = r"\n( +)# (.*)\n"
