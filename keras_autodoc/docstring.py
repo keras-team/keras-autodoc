@@ -51,8 +51,23 @@ def process_list_block(docstring,
     return docstring, block
 
 
-def process_docstring(docstring):
-    # First, extract code blocks and process them.
+def deindent_code(list_of_lines):
+    leading_spaces = None
+    for line in list_of_lines:
+        if not line or line[0] == "\n":
+            continue
+        spaces = utils.count_leading_spaces(line)
+        if leading_spaces is None:
+            leading_spaces = spaces
+        if spaces < leading_spaces:
+            leading_spaces = spaces
+    if leading_spaces:
+        return [line[leading_spaces:] for line in list_of_lines]
+    else:
+        return list_of_lines
+
+
+def get_code_blocks(docstring):
     code_blocks = []
     tmp = docstring[:]
     while "```" in tmp:
@@ -70,26 +85,17 @@ def process_docstring(docstring):
         ]
         # Most code snippets have 3 or 4 more leading spaces
         # on inner lines, but not all. Remove them.
-        inner_lines = snippet_lines[1:-1]
-        leading_spaces = None
-        for line in inner_lines:
-            if not line or line[0] == "\n":
-                continue
-            spaces = utils.count_leading_spaces(line)
-            if leading_spaces is None:
-                leading_spaces = spaces
-            if spaces < leading_spaces:
-                leading_spaces = spaces
-        if leading_spaces:
-            snippet_lines = (
-                [snippet_lines[0]]
-                + [line[leading_spaces:] for line in snippet_lines[1:-1]]
-                + [snippet_lines[-1]]
-            )
+        snippet_lines = ([snippet_lines[0]]
+                         + deindent_code(snippet_lines[1:-1])
+                         + [snippet_lines[-1]])
         snippet = "\n".join(snippet_lines)
         code_blocks.append(snippet)
         tmp = tmp[index:]
 
+    return code_blocks, docstring
+
+
+def get_sections(docstring):
     # Format docstring lists.
     section_regex = r"\n( +)# (.*)\n"
     section_idx = re.search(section_regex, docstring)
@@ -112,6 +118,14 @@ def process_docstring(docstring):
         # `docstring` has changed, so we can't use `next_section_idx` anymore
         # we have to recompute it
         section_idx = re.search(section_regex, docstring[shift:])
+    return sections, docstring
+
+
+def process_docstring(docstring):
+    # First, extract code blocks and process them.
+    code_blocks, docstring = get_code_blocks(docstring)
+
+    sections, docstring = get_sections(docstring)
 
     # Format docstring section titles.
     docstring = re.sub(r"\n(\s+)# (.*)\n", r"\n\1__\2__\n\n", docstring)
