@@ -15,20 +15,22 @@ class DocumentationGenerator:
     def __init__(self,
                  pages: Dict[str, list] = None,
                  project_url: Union[str, Dict[str, str]] = None,
-                 template_dir: pathlib.Path = None,
-                 examples_dir: pathlib.Path = None):
+                 template_dir=None,
+                 examples_dir=None):
         self.template_dir = template_dir
         self.pages = pages
         self.project_url = project_url
         self.examples_dir = examples_dir
 
-    def generate(self, dest_dir: pathlib.Path):
+    def generate(self, dest_dir):
+        dest_dir = pathlib.Path(dest_dir)
         print("Cleaning up existing sources directory.")
         if dest_dir.exists():
             shutil.rmtree(dest_dir)
 
         print("Populating sources directory with templates.")
-        shutil.copytree(self.template_dir, dest_dir)
+        if self.template_dir:
+            shutil.copytree(self.template_dir, dest_dir)
 
         for file_path, elements in self.pages.items():
             markdown_text = ''
