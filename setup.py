@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name="keras-autodoc",
-    version="0.1.3",
+    version="0.3.0",
     description="Building the Keras projects docs.",
     author="The Keras team",
     license="MIT",
