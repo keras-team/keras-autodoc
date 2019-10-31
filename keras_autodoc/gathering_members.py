@@ -11,14 +11,14 @@ def get_classes(module,
 
     # Arguments
 
-    module (str or module): The module to fetch the classes from. If it's a
-        string, it should be in the dotted format. `'keras.layers'` for example.
-    exclude: The names which will be excluded from the returned list. For
-        example, `get_classes('keras.layers', exclude=['Dense', 'Conv2D']`.
-    return_strings: If False, the actual classes will be returned. Note that
-        if you use aliases when building your docs, you should use strings.
-        This is because the computed signature uses
-        `__name__` and `__module__` if you don't provide a string as input.
+        module: The module to fetch the classes from. If it's a
+            string, it should be in the dotted format. `'keras.layers'` for example.
+        exclude: The names which will be excluded from the returned list. For
+            example, `get_classes('keras.layers', exclude=['Dense', 'Conv2D']`.
+        return_strings: If False, the actual classes will be returned. Note that
+            if you use aliases when building your docs, you should use strings.
+            This is because the computed signature uses
+            `__name__` and `__module__` if you don't provide a string as input.
 
     # Returns
 
@@ -34,14 +34,14 @@ def get_functions(module,
 
     # Arguments
 
-    module (str or module): The module to fetch the functions from. If it's a
-        string, it should be in the dotted format. `'keras.backend'` for example.
-    exclude: The names which will be excluded from the returned list. For
-        example, `get_functions('keras.backend', exclude=['max']`.
-    return_strings: If False, the actual functions will be returned. Note that
-        if you use aliases when building your docs, you should use strings.
-        This is because the computed signature uses
-        `__name__` and `__module__` if you don't provide a string as input.
+        module: The module to fetch the functions from. If it's a
+            string, it should be in the dotted format. `'keras.backend'` for example.
+        exclude: The names which will be excluded from the returned list. For
+            example, `get_functions('keras.backend', exclude=['max']`.
+        return_strings: If False, the actual functions will be returned. Note that
+            if you use aliases when building your docs, you should use strings.
+            This is because the computed signature uses
+            `__name__` and `__module__` if you don't provide a string as input.
 
     # Returns
 
@@ -55,15 +55,15 @@ def get_methods(cls, exclude=None, return_strings=True):
 
     # Arguments
 
-    cls (str or class): The class to fetch the methods from. If it's a
-        string, it should be in the dotted format. `'keras.layers.Dense'`
-        for example.
-    exclude: The names which will be excluded from the returned list. For
-        example, `get_methods('keras.Model', exclude=['save']`.
-    return_strings: If False, the actual methods will be returned. Note that
-        if you use aliases when building your docs, you should use strings.
-        This is because the computed signature uses
-        `__name__` and `__module__` if you don't provide a string as input.
+        cls: The class to fetch the methods from. If it's a
+            string, it should be in the dotted format. `'keras.layers.Dense'`
+            for example.
+        exclude: The names which will be excluded from the returned list. For
+            example, `get_methods('keras.Model', exclude=['save']`.
+        return_strings: If False, the actual methods will be returned. Note that
+            if you use aliases when building your docs, you should use strings.
+            This is because the computed signature uses
+            `__name__` and `__module__` if you don't provide a string as input.
 
     # Returns
 

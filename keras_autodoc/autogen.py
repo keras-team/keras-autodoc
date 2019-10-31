@@ -11,7 +11,19 @@ from . import utils
 
 
 class DocumentationGenerator:
+    """Generates the documentation.
 
+    # Arguments
+
+        pages: A dictionary containing the names of functions / classes / methods
+            to add to the documentation.
+        project_url: The url pointing to the module directory of your project on
+            GitHub. This will be used to make a `[Sources]` link.
+        template_dir: Where to put the markdown files which will be copied and
+            filled in the destination directory.
+        example_dir: Where you store examples in your project. Usually standalone
+            files with a markdown docstring at the top. Will be inserted in the docs.
+    """
     def __init__(self,
                  pages: Dict[str, list] = None,
                  project_url: Union[str, Dict[str, str]] = None,
@@ -23,6 +35,12 @@ class DocumentationGenerator:
         self.examples_dir = examples_dir
 
     def generate(self, dest_dir):
+        """Generate the docs.
+
+        # Arguments
+
+            dest_dir: Where to put the resulting markdown files.
+        """
         dest_dir = pathlib.Path(dest_dir)
         print("Cleaning up existing sources directory.")
         if dest_dir.exists():

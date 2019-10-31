@@ -1,0 +1,10 @@
+site_name: Keras Autodoc
+
+docs_dir: sources
+repo_url: https://github.com/keras-team/keras-autodoc
+site_description: 'Documentation for Keras Autodoc.'
+
+nav:
+    - Home: index.md
+    - Documentation generator: documentation_generator.md
+    - Automatic gathering: automatic_gathering.md

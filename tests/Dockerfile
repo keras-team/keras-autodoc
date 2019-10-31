@@ -22,3 +22,10 @@ RUN pip install flake8
 COPY ./ ./keras-autodoc
 WORKDIR keras-autodoc
 RUN flake8
+
+FROM base_image as doc_tests
+COPY ./ ./keras-autodoc
+RUN pip install -e keras-autodoc
+WORKDIR keras-autodoc/docs
+RUN python autogen.py
+RUN mkdocs build
