@@ -1,5 +1,7 @@
 site_name: Keras Autodoc
-
+theme:
+    name: mkdocs
+    custom_dir: custom_theme
 docs_dir: sources
 repo_url: https://github.com/keras-team/keras-autodoc
 site_description: 'Documentation for Keras Autodoc.'
