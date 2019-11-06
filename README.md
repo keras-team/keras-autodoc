@@ -60,7 +60,7 @@ and you'll be able to see your website at [localhost:8000/callbacks](http://loca
 
 ### Docstring format:
 
-The docstrings used should use the Google style docstrings with markdown, or just plain markdown. 
+The docstrings used should use the The docstrings follow the [Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md#381-docstrings) with markdown, or just plain markdown.
 
 For example, let's take this class:
 

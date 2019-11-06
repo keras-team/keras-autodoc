@@ -29,7 +29,7 @@ If you have Docker, you can easily run all tests without any setup by running `d
 ## Pre-commit hook
 
 You can make git run `flake8` before every commit automatically. It will make you go faster by
-avoiding pushing commit which are not passing the flake8 tests. To do this, 
+avoiding pushing commits which are not passing the flake8 tests. To do this, 
 open `.git/hooks/pre-commit` with a text editor and write `flake8` inside. If the `flake8` test doesn't
 pass, the commit will be aborted.
 
