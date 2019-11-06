@@ -104,7 +104,7 @@ will be rendered as:
 ### ImageDataGenerator class:
 
 ```python
-tests.dummy_package.dummy_module.ImageDataGenerator(featurewise_center, zca_whitening, width_shift_range=0.0)
+dummy_module.ImageDataGenerator(featurewise_center, zca_whitening, width_shift_range=0.0)
 ```
 
 Generate batches of tensor image data with real-time data augmentation.

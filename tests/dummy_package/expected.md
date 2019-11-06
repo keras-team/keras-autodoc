@@ -1,5 +1,5 @@
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L1)</span>
-### Dense class:
+### Dense class
 
 ```python
 tests.dummy_package.dummy_module.Dense(units, activation=None, use_bias=True, kernel_initializer='glorot_uniform', bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None, kernel_constraint=None, bias_constraint=None, **kwargs)
@@ -73,7 +73,7 @@ the output would have shape `(batch_size, units)`.
 ----
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L113)</span>
-### ImageDataGenerator class:
+### ImageDataGenerator class
 
 ```python
 tests.dummy_package.dummy_module.ImageDataGenerator(featurewise_center=False, samplewise_center=False, featurewise_std_normalization=False, samplewise_std_normalization=False, zca_whitening=False, zca_epsilon=1e-06, rotation_range=0, width_shift_range=0.0, height_shift_range=0.0, brightness_range=None, shear_range=0.0, zoom_range=0.0, channel_shift_range=0.0, fill_mode='nearest', cval=0.0, horizontal_flip=False, vertical_flip=False, rescale=None, preprocessing_function=None, data_format='channels_last', validation_split=0.0, interpolation_order=1, dtype='float32')
@@ -283,7 +283,7 @@ model.fit_generator(
 
 ----
 
-### flow method:
+### flow method
 
 
 ```python
@@ -337,7 +337,7 @@ An `Iterator` yielding tuples of `(x, y)`
 
 ----
 
-### flow_from_directory method:
+### flow_from_directory method
 
 
 ```python
@@ -423,7 +423,7 @@ A `DirectoryIterator` yielding tuples of `(x, y)`
 
 ----
 
-### to_categorical function:
+### to_categorical function
 
 
 ```python

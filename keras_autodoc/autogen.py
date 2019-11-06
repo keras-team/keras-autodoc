@@ -93,7 +93,7 @@ class DocumentationGenerator:
         subblocks = []
         if self.project_url is not None:
             subblocks.append(utils.make_source_link(cls, self.project_url))
-        subblocks.append(f"### {cls.__name__} class:\n")
+        subblocks.append(f"### {cls.__name__} class\n")
 
         signature = get_class_signature(cls, signature_override)
         signature = self.process_signature(signature)
@@ -107,7 +107,7 @@ class DocumentationGenerator:
         subblocks = []
         signature = get_function_signature(method, signature_override)
         signature = self.process_signature(signature)
-        subblocks.append(f"### {method.__name__} method:\n")
+        subblocks.append(f"### {method.__name__} method\n")
         subblocks.append(utils.code_snippet(signature))
 
         docstring = getdoc(method)
@@ -120,7 +120,7 @@ class DocumentationGenerator:
         subblocks = []
         signature = get_function_signature(function, signature_override)
         signature = self.process_signature(signature)
-        subblocks.append(f"### {function.__name__} function:\n")
+        subblocks.append(f"### {function.__name__} function\n")
         subblocks.append(utils.code_snippet(signature))
 
         docstring = getdoc(function)
