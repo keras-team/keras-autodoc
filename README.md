@@ -4,6 +4,13 @@
 
 keras-autodoc will fetch the docstrings from the functions you wish to document and will insert them in the markdown files.
 
+### Install
+
+```bash
+pip install keras-autodoc
+```
+
+We recommend pinning the version (eg: `pip install keras-autodoc==0.3.2`). We may break compatibility without any warning.
 
 ### Example
 
