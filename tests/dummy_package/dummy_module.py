@@ -313,7 +313,7 @@ class ImageDataGenerator:
     """
 
     def __init__(self,
-                 featurewise_center=False,
+                 featurewise_center: bool = False,
                  samplewise_center=False,
                  featurewise_std_normalization=False,
                  samplewise_std_normalization=False,
