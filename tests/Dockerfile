@@ -1,7 +1,7 @@
 FROM python:3.6 as base_image
 
 RUN pip install tensorflow
-RUN pip install markdown mkdocs pytest sphinx
+RUN pip install markdown mkdocs pytest sphinx black==19.10b0
 
 FROM base_image as integration_tests
 RUN pip install keras==2.3.0

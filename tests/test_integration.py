@@ -4,10 +4,16 @@ from keras_autodoc.get_signatures import get_function_signature, get_signature_e
 
 
 def test_signature():
-    excpected = ('Model.compile(optimizer, loss=None, metrics=None, '
-                 'loss_weights=None, sample_weight_mode=None, '
-                 'weighted_metrics=None, target_tensors=None, '
-                 '**kwargs)')
+    excpected = ('Model.compile(\n'
+                 '    optimizer,\n'
+                 '    loss=None,\n'
+                 '    metrics=None,\n'
+                 '    loss_weights=None,\n'
+                 '    sample_weight_mode=None,\n'
+                 '    weighted_metrics=None,\n'
+                 '    target_tensors=None,\n'
+                 '    **kwargs\n'
+                 ')')
     computed = get_function_signature(Model.compile)
     assert computed == excpected
 

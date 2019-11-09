@@ -1,6 +1,7 @@
 import warnings
 from sphinx.util.inspect import Signature
 from . import utils
+import black
 
 
 def get_signature_start(function):
@@ -32,7 +33,7 @@ def get_function_signature(function, override=None):
     else:
         signature_start = override
     signature_end = get_signature_end(function)
-    return signature_start + signature_end
+    return format_signature(signature_start, signature_end)
 
 
 def get_class_signature(cls, override=None):
@@ -41,5 +42,27 @@ def get_class_signature(cls, override=None):
     else:
         signature_start = override
     signature_end = get_signature_end(cls.__init__)
-    class_signature = signature_start + signature_end
-    return class_signature
+    return format_signature(signature_start, signature_end)
+
+
+def format_signature(signature_start: str, signature_end: str):
+    """pretty formatting to avoid long signatures on one single line"""
+
+    # first, we make it look like a real function declaration.
+    fake_signature_start = 'x' * len(signature_start)
+    fake_signature = fake_signature_start + signature_end
+    fake_python_code = f'def {fake_signature}:\n    pass\n'
+
+    # we format with black
+    mode = black.FileMode(line_length=110)
+    formatted_fake_python_code = black.format_str(fake_python_code, mode=mode)
+
+    # we make the final, multiline signature
+    new_signature_end = extract_signature_end(formatted_fake_python_code)
+    return signature_start + new_signature_end
+
+
+def extract_signature_end(function_definition):
+    start = function_definition.find('(')
+    stop = function_definition.rfind(')')
+    return function_definition[start: stop + 1]

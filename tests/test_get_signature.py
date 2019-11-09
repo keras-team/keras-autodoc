@@ -1,6 +1,7 @@
 from keras_autodoc.get_signatures import get_signature_end
 from keras_autodoc.get_signatures import get_signature_start
 from keras_autodoc.get_signatures import get_class_signature
+from keras_autodoc.get_signatures import format_signature
 
 
 def test_get_signature_end():
@@ -51,3 +52,30 @@ def test_get_class_signature_with_args():
     expected = 'tests.test_get_signature.HelloWorld2(one, two, three=3)'
     computed = get_class_signature(HelloWorld2)
     assert expected == computed
+
+
+def test_format_signature1():
+    signature_start = 'hello.world'
+    signature_end = '(dodo: str = "stuff", dada=(7, 9))'
+
+    expected = signature_start + signature_end
+    computed = format_signature(signature_start, signature_end)
+    assert computed == expected
+
+
+def test_format_signature2():
+    signature_start = 'hello.very.incredibly.large.world'
+    signature_end = ('(doddodododododo: str = "stuff", '
+                     'dadadadadadadada: tuple = (7, 9), '
+                     'dudududududududu=37, '
+                     'stufffffffffffffff=48)')
+
+    expected = ('hello.very.incredibly.large.world(\n'
+                '    doddodododododo: str = "stuff",\n'
+                '    dadadadadadadada: tuple = (7, 9),\n'
+                '    dudududududududu=37,\n'
+                '    stufffffffffffffff=48,\n'
+                ')')
+
+    computed = format_signature(signature_start, signature_end)
+    assert computed == expected

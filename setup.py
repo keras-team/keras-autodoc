@@ -8,7 +8,7 @@ setup(
     description="Building the Keras projects docs.",
     author="The Keras team",
     license="MIT",
-    install_requires=["markdown", 'sphinx'],
+    install_requires=["markdown", 'sphinx', 'black==19.10b0'],
     extras_require={"tests": ["pytest", "pytest-pep8"]},
     packages=find_packages(),
 )
