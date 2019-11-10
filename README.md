@@ -4,6 +4,8 @@
 
 keras-autodoc will fetch the docstrings from the functions you wish to document and will insert them in the markdown files.
 
+Take a look at the [documentation](https://gabrieldemarmiesse.github.io/keras-autodoc/)!
+
 ### Install
 
 ```bash

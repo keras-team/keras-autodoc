@@ -15,8 +15,10 @@ class DocumentationGenerator:
 
     # Arguments
 
-        pages: A dictionary containing the names of functions / classes / methods
-            to add to the documentation.
+        pages: A dictionary. The keys are the files' paths, the values
+            are lists of strings, functions /classes / methods names
+            with dotted access to the object. For example,
+            `pages = {'my_file.md': ['keras.layers.Dense']}` is valid.
         project_url: The url pointing to the module directory of your project on
             GitHub. This will be used to make a `[Sources]` link.
         template_dir: Where to put the markdown files which will be copied and
