@@ -29,3 +29,7 @@ RUN pip install -e keras-autodoc
 WORKDIR keras-autodoc/docs
 RUN python autogen.py
 RUN mkdocs build
+
+FROM base_image as test_release
+COPY ./ ./keras-autodoc
+RUN pip install ./keras-autodoc
