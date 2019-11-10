@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Documentation for Keras Autodoc.">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Keras Autodoc</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href=".">Keras Autodoc</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="active">
+                                <a href=".">Home</a>
+                            </li>
+                            <li >
+                                <a href="documentation_generator/">Documentation generator</a>
+                            </li>
+                            <li >
+                                <a href="automatic_gathering/">Automatic gathering</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="disabled">
+                                <a rel="next" >
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="documentation_generator/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/keras-team/keras-autodoc/edit/master/docs/index.md"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+    <div class="col-md-12" role="main">
+
+<h1 id="keras-autodoc">keras-autodoc</h1>
+<p><a href="http://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html">Autodoc</a> for <a href="https://www.mkdocs.org/">mkdocs</a>.</p>
+<p>keras-autodoc will fetch the docstrings from the functions you wish to document and will insert them in the markdown files.</p>
+<h3 id="install">Install</h3>
+<pre><code class="bash">pip install keras-autodoc
+</code></pre>
+
+<p>We recommend pinning the version (eg: <code>pip install keras-autodoc==0.3.2</code>). We may break compatibility without any warning.</p>
+<h3 id="example">Example</h3>
+<p>Let's suppose that you have a <code>docs</code> directory:</p>
+<pre><code>./docs
+|-- autogen.py
+|-- mkdocs.yml
+</code></pre>
+
+<p>The API is quite simple:</p>
+<pre><code class="python"># content of docs/autogen.py
+
+from keras_autodoc import DocumentationGenerator
+
+
+pages = {'layers/core.md': ['keras.layers.Dense', 'keras.layers.Flatten'],
+         'callbacks.md': ['keras.callbacks.TensorBoard']}
+
+doc_generator = DocumentationGenerator(pages)
+doc_generator.generate('./sources')
+</code></pre>
+
+<pre><code class="yaml"># content of docs/mkdocs.yml
+
+site_name: My_site
+docs_dir: sources
+site_description: 'My pretty site.'
+
+nav:
+    - Core: layers/core.md
+    - Callbacks:
+      - Some callbacks: callbacks.md
+</code></pre>
+
+<p>Call this Python code, then you just have to run:</p>
+<pre><code class="bash">mkdocs serve
+</code></pre>
+
+<p>and you'll be able to see your website at <a href="http://localhost:8000/callbacks/">localhost:8000/callbacks</a>.</p>
+<h3 id="docstring-format">Docstring format:</h3>
+<p>The docstrings used should use the The docstrings follow the <a href="https://github.com/google/styleguide/blob/gh-pages/pyguide.md#381-docstrings">Google Python Style Guide</a> with markdown, or just plain markdown.</p>
+<p>For example, let's take this class:</p>
+<pre><code class="python">class ImageDataGenerator:
+    &quot;&quot;&quot;Generate batches of tensor image data with real-time data augmentation.
+
+    The data will be looped over (in batches).
+
+    # Arguments
+        featurewise_center: Boolean.
+            Set input mean to 0 over the dataset, feature-wise.
+        zca_whitening: Boolean. Apply ZCA whitening.
+        width_shift_range: Float, 1-D array-like or int
+            - float: fraction of total width, if &lt; 1, or pixels if &gt;= 1.
+            - 1-D array-like: random elements from the array.
+            - int: integer number of pixels from interval
+                `(-width_shift_range, +width_shift_range)`
+            - With `width_shift_range=2` possible values
+                are integers `[-1, 0, +1]`,
+                same as with `width_shift_range=[-1, 0, +1]`,
+                while with `width_shift_range=1.0` possible values are floats
+                in the interval `[-1.0, +1.0)`.
+
+    # Examples
+
+    Example of using `.flow(x, y)`:
+    ```python
+    datagen = ImageDataGenerator(
+        featurewise_center=True,
+        zca_whitening=True,
+        width_shift_range=0.2)
+    # compute quantities required for featurewise normalization
+    # (std, mean, and principal components if ZCA whitening is applied)
+    datagen.fit(x_train)
+    # fits the model on batches with real-time data augmentation:
+    model.fit_generator(datagen.flow(x_train, y_train, batch_size=32),
+                        steps_per_epoch=len(x_train) / 32, epochs=epochs)
+    ```
+    &quot;&quot;&quot;
+
+    def __init__(self,featurewise_center, zca_whitening, width_shift_range):
+        pass
+</code></pre>
+
+<p>will be rendered as:</p>
+<h3 id="imagedatagenerator-class">ImageDataGenerator class:</h3>
+<pre><code class="python">dummy_module.ImageDataGenerator(featurewise_center, zca_whitening, width_shift_range=0.0)
+</code></pre>
+
+<p>Generate batches of tensor image data with real-time data augmentation.</p>
+<p>The data will be looped over (in batches).</p>
+<p><strong>Arguments</strong></p>
+<ul>
+<li><strong>featurewise_center</strong>: Boolean.
+    Set input mean to 0 over the dataset, feature-wise.</li>
+<li><strong>zca_whitening</strong>: Boolean. Apply ZCA whitening.</li>
+<li><strong>width_shift_range</strong>: Float, 1-D array-like or int<ul>
+<li>float: fraction of total width, if &lt; 1, or pixels if &gt;= 1.</li>
+<li>1-D array-like: random elements from the array.</li>
+<li>int: integer number of pixels from interval
+    <code>(-width_shift_range, +width_shift_range)</code></li>
+<li>With <code>width_shift_range=2</code> possible values
+    are integers <code>[-1, 0, +1]</code>,
+    same as with <code>width_shift_range=[-1, 0, +1]</code>,
+    while with <code>width_shift_range=1.0</code> possible values are floats
+    in the interval <code>[-1.0, +1.0)</code>.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Examples</strong></p>
+<p>Example of using <code>.flow(x, y)</code>:</p>
+<pre><code class="python">datagen = ImageDataGenerator(
+    featurewise_center=True,
+    zca_whitening=True,
+    width_shift_range=0.2)
+# compute quantities required for featurewise normalization
+# (std, mean, and principal components if ZCA whitening is applied)
+datagen.fit(x_train)
+# fits the model on batches with real-time data augmentation:
+model.fit_generator(datagen.flow(x_train, y_train, batch_size=32),
+                    steps_per_epoch=len(x_train) / 32, epochs=epochs)
+</code></pre>
+
+<h3 id="take-a-look-at-our-docs">Take a look at our docs</h3>
+<p>If you want examples, you can take a look at <a href="https://github.com/keras-team/autokeras/tree/master/docs">the docs directory of autokeras</a> as well as <a href="https://autokeras.com/">the generated docs</a>.</p>
+<p>You can also look at <a href="https://github.com/keras-team/keras-tuner/tree/master/docs">the docs directory of keras-tuner</a>.</p></div>
+
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2019-11-10 14:32:50
+-->
