@@ -16,6 +16,7 @@ setup(
     author_email='gabrieldemarmiesse@gmail.com',
     description='Building the Keras projects docs.',
     long_description=readme.read_text(encoding='utf-8'),
+    long_description_content_type='text/markdown',
     url='https://github.com/keras-team/keras-autodoc',
     license='Apache License 2.0',
     extras_require={'tests': ['pytest', 'pytest-pep8']},
