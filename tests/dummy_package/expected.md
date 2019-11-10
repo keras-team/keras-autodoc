@@ -319,6 +319,7 @@ model.fit_generator(
 
 ----
 
+<span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L341)</span>
 ### flow method
 
 
@@ -384,6 +385,7 @@ An `Iterator` yielding tuples of `(x, y)`
 
 ----
 
+<span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L396)</span>
 ### flow_from_directory method
 
 
@@ -485,6 +487,7 @@ A `DirectoryIterator` yielding tuples of `(x, y)`
 
 ----
 
+<span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L78)</span>
 ### to_categorical function
 
 

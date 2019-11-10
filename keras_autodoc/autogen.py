@@ -110,6 +110,8 @@ class DocumentationGenerator:
 
     def _render_method(self, method, signature_override=None):
         subblocks = []
+        if self.project_url is not None:
+            subblocks.append(utils.make_source_link(method, self.project_url))
         signature = get_function_signature(method, signature_override)
         signature = self.process_signature(signature)
         subblocks.append(f"### {method.__name__} method\n")
@@ -123,6 +125,8 @@ class DocumentationGenerator:
 
     def _render_function(self, function, signature_override=None):
         subblocks = []
+        if self.project_url is not None:
+            subblocks.append(utils.make_source_link(function, self.project_url))
         signature = get_function_signature(function, signature_override)
         signature = self.process_signature(signature)
         subblocks.append(f"### {function.__name__} function\n")
