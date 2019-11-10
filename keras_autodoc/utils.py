@@ -95,3 +95,15 @@ def import_object(string: str):
         except ModuleNotFoundError:
             last_object_got = getattr(last_object_got, name)
     return last_object_got
+
+
+def get_type(object_) -> str:
+    if inspect.isclass(object_):
+        return 'class'
+    elif ismethod(object_):
+        return 'method'
+    elif inspect.isfunction(object_):
+        return 'function'
+    else:
+        raise TypeError(f'{object_} is detected as neither a class, a method nor'
+                        f'a function.')

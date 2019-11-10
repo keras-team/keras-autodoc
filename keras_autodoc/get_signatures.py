@@ -2,6 +2,7 @@ import warnings
 from sphinx.util.inspect import Signature
 from . import utils
 import black
+import inspect
 
 
 def get_signature_start(function):
@@ -43,6 +44,13 @@ def get_class_signature(cls, override=None):
         signature_start = override
     signature_end = get_signature_end(cls.__init__)
     return format_signature(signature_start, signature_end)
+
+
+def get_signature(object_, override=None):
+    if inspect.isclass(object_):
+        return get_class_signature(object_, override)
+    else:
+        return get_function_signature(object_, override)
 
 
 def format_signature(signature_start: str, signature_end: str):
