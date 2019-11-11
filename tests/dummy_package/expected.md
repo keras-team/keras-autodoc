@@ -1,5 +1,7 @@
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L1)</span>
+
 ### Dense class
+
 
 ```python
 tests.dummy_package.dummy_module.Dense(
@@ -16,6 +18,7 @@ tests.dummy_package.dummy_module.Dense(
     **kwargs
 )
 ```
+
 
 Just your regular densely-connected NN layer.
 
@@ -85,7 +88,9 @@ the output would have shape `(batch_size, units)`.
 ----
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L113)</span>
+
 ### ImageDataGenerator class
+
 
 ```python
 tests.dummy_package.dummy_module.ImageDataGenerator(
@@ -114,6 +119,7 @@ tests.dummy_package.dummy_module.ImageDataGenerator(
     dtype="float32",
 )
 ```
+
 
 Generate batches of tensor image data with real-time data augmentation.
 
@@ -282,8 +288,7 @@ model.fit_generator(
     steps_per_epoch=2000,
     epochs=50)
 ```
-Example of using ```.flow_from_dataframe(dataframe, directory,
-```:
+Example of using `flow_from_dataframe(dataframe, directory, x_col, y_col)`:
 ```python
 train_df = pandas.read_csv("./train.csv")
 valid_df = pandas.read_csv("./valid.csv")
@@ -319,7 +324,8 @@ model.fit_generator(
 
 ----
 
-<span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L341)</span>
+<span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L340)</span>
+
 ### flow method
 
 
@@ -385,7 +391,8 @@ An `Iterator` yielding tuples of `(x, y)`
 
 ----
 
-<span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L396)</span>
+<span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L395)</span>
+
 ### flow_from_directory method
 
 
@@ -488,6 +495,7 @@ A `DirectoryIterator` yielding tuples of `(x, y)`
 ----
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L78)</span>
+
 ### to_categorical function
 
 

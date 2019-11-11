@@ -276,8 +276,7 @@ class ImageDataGenerator:
         steps_per_epoch=2000,
         epochs=50)
     ```
-    Example of using ```.flow_from_dataframe(dataframe, directory,
-                                            x_col, y_col)```:
+    Example of using `flow_from_dataframe(dataframe, directory, x_col, y_col)`:
     ```python
     train_df = pandas.read_csv("./train.csv")
     valid_df = pandas.read_csv("./valid.csv")
