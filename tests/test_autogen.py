@@ -366,18 +366,18 @@ with a nD tensor, it reproduces the Theano behavior.
 
 # Examples
 ```python
-    # Theano-like behavior example
-    >>> x = K.random_uniform_variable(shape=(2, 3), low=0, high=1)
-    >>> y = K.ones((4, 3, 5))
-    >>> xy = K.dot(x, y)
-    >>> K.int_shape(xy)
-    (2, 4, 5)
+# Theano-like behavior example
+>>> x = K.random_uniform_variable(shape=(2, 3), low=0, high=1)
+>>> y = K.ones((4, 3, 5))
+>>> xy = K.dot(x, y)
+>>> K.int_shape(xy)
+(2, 4, 5)
 ```
 
 # Numpy implementation
 ```python
-    def dot(x, y):
-        return dot(x, y)
+def dot(x, y):
+    return dot(x, y)
 ```
     """
 
