@@ -1,7 +1,5 @@
 import re
 
-from . import utils
-
 
 def process_list_block(docstring,
                        starting_point,
@@ -48,22 +46,6 @@ def process_list_block(docstring,
     return docstring, block
 
 
-def deindent_code(list_of_lines):
-    leading_spaces = None
-    for line in list_of_lines:
-        if not line or line[0] == "\n":
-            continue
-        spaces = utils.count_leading_spaces(line)
-        if leading_spaces is None:
-            leading_spaces = spaces
-        if spaces < leading_spaces:
-            leading_spaces = spaces
-    if leading_spaces:
-        return [line[leading_spaces:] for line in list_of_lines]
-    else:
-        return list_of_lines
-
-
 def get_code_blocks(docstring):
     code_blocks = {}
     tmp = docstring[:]
@@ -74,18 +56,6 @@ def get_code_blocks(docstring):
         # Place marker in docstring for later reinjection.
         token = f'$KERAS_AUTODOC_CODE_BLOCK_{len(code_blocks)}'
         docstring = docstring.replace(snippet, token)
-        snippet_lines = snippet.split("\n")
-        # Remove leading spaces.
-        num_leading_spaces = snippet_lines[-1].find("`")
-        snippet_lines = [snippet_lines[0]] + [
-            line[num_leading_spaces:] for line in snippet_lines[1:]
-        ]
-        # Most code snippets have 3 or 4 more leading spaces
-        # on inner lines, but not all. Remove them.
-        snippet_lines = ([snippet_lines[0]]
-                         + deindent_code(snippet_lines[1:-1])
-                         + [snippet_lines[-1]])
-        snippet = "\n".join(snippet_lines)
         code_blocks[token] = snippet
         tmp = tmp[index:]
 
