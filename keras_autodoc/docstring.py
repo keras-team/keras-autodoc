@@ -65,15 +65,15 @@ def deindent_code(list_of_lines):
 
 
 def get_code_blocks(docstring):
-    code_blocks = []
+    code_blocks = {}
     tmp = docstring[:]
     while "```" in tmp:
         tmp = tmp[tmp.find("```"):]
         index = tmp[3:].find("```") + 6
         snippet = tmp[:index]
         # Place marker in docstring for later reinjection.
-        docstring = docstring.replace(snippet,
-                                      "$CODE_BLOCK_%d" % len(code_blocks))
+        token = f'$KERAS_AUTODOC_CODE_BLOCK_{len(code_blocks)}'
+        docstring = docstring.replace(snippet, token)
         snippet_lines = snippet.split("\n")
         # Remove leading spaces.
         num_leading_spaces = snippet_lines[-1].find("`")
@@ -86,7 +86,7 @@ def get_code_blocks(docstring):
                          + deindent_code(snippet_lines[1:-1])
                          + [snippet_lines[-1]])
         snippet = "\n".join(snippet_lines)
-        code_blocks.append(snippet)
+        code_blocks[token] = snippet
         tmp = tmp[index:]
 
     return code_blocks, docstring
@@ -135,6 +135,6 @@ def process_docstring(docstring):
         docstring = docstring.replace(marker, content)
 
     # Reinject code blocks.
-    for i, code_block in enumerate(code_blocks):
-        docstring = docstring.replace("$CODE_BLOCK_%d" % i, code_block)
+    for token, code_block in code_blocks.items():
+        docstring = docstring.replace(token, code_block)
     return docstring
