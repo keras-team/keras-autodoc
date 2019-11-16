@@ -382,13 +382,13 @@ class ImageDataGenerator:
 
         # Returns
             An `Iterator` yielding tuples of `(x, y)`
-                where `x` is a numpy array of image data
-                (in the case of a single image input) or a list
-                of numpy arrays (in the case with
-                additional inputs) and `y` is a numpy array
-                of corresponding labels. If 'sample_weight' is not None,
-                the yielded tuples are of the form `(x, y, sample_weight)`.
-                If `y` is None, only the numpy array `x` is returned.
+            where `x` is a numpy array of image data
+            (in the case of a single image input) or a list
+            of numpy arrays (in the case with
+            additional inputs) and `y` is a numpy array
+            of corresponding labels. If 'sample_weight' is not None,
+            the yielded tuples are of the form `(x, y, sample_weight)`.
+            If `y` is None, only the numpy array `x` is returned.
         """
         ...
 
@@ -477,8 +477,8 @@ class ImageDataGenerator:
 
         # Returns
             A `DirectoryIterator` yielding tuples of `(x, y)`
-                where `x` is a numpy array containing a batch
-                of images with shape `(batch_size, *target_size, channels)`
-                and `y` is a numpy array of corresponding labels.
+            where `x` is a numpy array containing a batch
+            of images with shape `(batch_size, *target_size, channels)`
+            and `y` is a numpy array of corresponding labels.
         """
         ...

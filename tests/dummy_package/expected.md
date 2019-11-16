@@ -34,7 +34,6 @@ it is flattened prior to the initial dot product with `kernel`.
 
 __Example__
 
-
 ```python
 # as first layer in a sequential model:
 model = Sequential()
@@ -84,6 +83,7 @@ __Output shape__
 nD tensor with shape: `(batch_size, ..., units)`.
 For instance, for a 2D input with shape `(batch_size, input_dim)`,
 the output would have shape `(batch_size, units)`.
+
 
 ----
 
@@ -201,7 +201,6 @@ __Arguments__
 - __dtype__: Dtype to use for the generated arrays.
 
 __Examples__
-
 
 Example of using `.flow(x, y)`:
 ```python
@@ -322,6 +321,7 @@ model.fit_generator(
         validation_steps=800)
 ```
 
+
 ----
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L340)</span>
@@ -381,13 +381,14 @@ __Arguments__
 __Returns__
 
 An `Iterator` yielding tuples of `(x, y)`
-    where `x` is a numpy array of image data
-    (in the case of a single image input) or a list
-    of numpy arrays (in the case with
-    additional inputs) and `y` is a numpy array
-    of corresponding labels. If 'sample_weight' is not None,
-    the yielded tuples are of the form `(x, y, sample_weight)`.
-    If `y` is None, only the numpy array `x` is returned.
+where `x` is a numpy array of image data
+(in the case of a single image input) or a list
+of numpy arrays (in the case with
+additional inputs) and `y` is a numpy array
+of corresponding labels. If 'sample_weight' is not None,
+the yielded tuples are of the form `(x, y, sample_weight)`.
+If `y` is None, only the numpy array `x` is returned.
+
 
 ----
 
@@ -488,9 +489,10 @@ __Arguments__
 __Returns__
 
 A `DirectoryIterator` yielding tuples of `(x, y)`
-    where `x` is a numpy array containing a batch
-    of images with shape `(batch_size, *target_size, channels)`
-    and `y` is a numpy array of corresponding labels.
+where `x` is a numpy array containing a batch
+of images with shape `(batch_size, *target_size, channels)`
+and `y` is a numpy array of corresponding labels.
+
 
 ----
 
@@ -523,7 +525,6 @@ is placed last.
 
 __Example__
 
-
 ```python
 # Consider an array of 5 labels out of a set of 3 classes {0, 1, 2}:
 > labels
@@ -538,6 +539,7 @@ array([[ 1.,  0.,  0.],
        [ 0.,  0.,  1.],
        [ 1.,  0.,  0.]], dtype=float32)
 ```
+
 
 ----
 

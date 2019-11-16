@@ -107,3 +107,16 @@ def get_type(object_) -> str:
     else:
         raise TypeError(f'{object_} is detected as neither a class, a method nor'
                         f'a function.')
+
+
+def insert_in_string(target, string_to_insert, start, end):
+    target_start_cut = target[:start]
+    target_end_cut = target[end:]
+    return target_start_cut + string_to_insert + target_end_cut
+
+
+def remove_indentation(string):
+    string = string.replace('\n    ', '\n')
+    if string[:4] == '    ':
+        string = string[4:]
+    return string
