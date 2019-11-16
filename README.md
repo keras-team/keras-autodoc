@@ -1,6 +1,6 @@
 # keras-autodoc
 
-![](https://https://github.com/keras-team/keras-autodoc/workflows/Unit%20testing/badge.svg)
+![](https://https://github.com/keras-team/keras-autodoc/workflows/.github/workflows/dockerimage.yml/badge.svg?branch=master)
 
 
 [Autodoc](http://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html) for [mkdocs](https://www.mkdocs.org/).
