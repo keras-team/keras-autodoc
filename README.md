@@ -1,5 +1,8 @@
 # keras-autodoc
 
+![](https://https://github.com/keras-team/keras-autodoc/workflows/Unit%20testing/badge.svg)
+
+
 [Autodoc](http://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html) for [mkdocs](https://www.mkdocs.org/).
 
 keras-autodoc will fetch the docstrings from the functions you wish to document and will insert them in the markdown files.
