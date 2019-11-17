@@ -30,6 +30,7 @@ class DocumentationGenerator:
         example_dir: Where you store examples in your project. Usually standalone
             files with a markdown docstring at the top. Will be inserted in the docs.
     """
+
     def __init__(self,
                  pages: Dict[str, list] = None,
                  project_url: Union[str, Dict[str, str]] = None,
