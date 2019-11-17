@@ -30,11 +30,14 @@ def get_section_end(docstring, section_start):
         return section_end - 2
 
 
+
+
 def get_google_style_sections_without_code(docstring):
-    regex_indented_sections_start = re.compile(r'\n# .+?\n')
+    regex_indented_sections_start =  re.compile(r'\n# .+?\n')
 
     google_style_sections = {}
-    for i in itertools.count():
+
+    for i in itertools.count() :
         match = re.search(regex_indented_sections_start, docstring)
         if match is None:
             break
