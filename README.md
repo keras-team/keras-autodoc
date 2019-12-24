@@ -55,9 +55,10 @@ nav:
       - Some callbacks: callbacks.md
 ```
 
-Call this Python code, then you just have to run:
+Then you just have to run:
 
 ```bash
+python autogen.py
 mkdocs serve
 ```
 
