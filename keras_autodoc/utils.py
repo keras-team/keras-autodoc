@@ -120,3 +120,7 @@ def remove_indentation(string):
     if string[:4] == '    ':
         string = string[4:]
     return string
+
+
+def get_dotted_path(class_):
+    return f'{class_.__module__}.{class_.__qualname__}'

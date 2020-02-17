@@ -1,6 +1,6 @@
 import shutil
 import pathlib
-from inspect import getdoc
+from inspect import getdoc, isclass
 from typing import Dict, Union
 
 from .docstring import process_docstring
@@ -31,14 +31,16 @@ class DocumentationGenerator:
             files with a markdown docstring at the top. Will be inserted in the docs.
     """
     def __init__(self,
-                 pages: Dict[str, list] = None,
+                 pages: Dict[str, list] = {},
                  project_url: Union[str, Dict[str, str]] = None,
                  template_dir=None,
                  examples_dir=None):
-        self.template_dir = template_dir
         self.pages = pages
         self.project_url = project_url
+        self.template_dir = template_dir
         self.examples_dir = examples_dir
+        self.class_aliases = {}
+        self._fill_aliases()
 
     def generate(self, dest_dir):
         """Generate the docs.
@@ -91,7 +93,7 @@ class DocumentationGenerator:
         subblocks = []
         if self.project_url is not None:
             subblocks.append(utils.make_source_link(object_, self.project_url))
-        signature = get_signature(object_, signature_override)
+        signature = get_signature(object_, self.class_aliases, signature_override)
         signature = self.process_signature(signature)
         subblocks.append(f"### {object_.__name__} {get_type(object_)}\n")
         subblocks.append(utils.code_snippet(signature))
@@ -101,3 +103,12 @@ class DocumentationGenerator:
             docstring = self.process_docstring(docstring)
             subblocks.append(docstring)
         return "\n\n".join(subblocks) + '\n\n----\n\n'
+
+    def _fill_aliases(self):
+        for list_elements in self.pages.values():
+            for element_as_str in list_elements:
+                element = utils.import_object(element_as_str)
+                if not isclass(element):
+                    continue
+                true_dotted_path = utils.get_dotted_path(element)
+                self.class_aliases[true_dotted_path] = element_as_str

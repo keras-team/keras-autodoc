@@ -438,6 +438,30 @@ def test_aliases_methods(element, expected):
     assert expected in computed
 
 
+expected_dodo = """### dodo function
+
+
+```python
+tests.dummy_package.dummy_module2.dodo(x: tests.dummy_package.DataGenerator)
+```
+
+
+Some dodo
+
+
+----
+
+"""
+
+
+def test_aliases_in_hints():
+    pages = {'dod.md': ['tests.dummy_package.DataGenerator',
+                        'tests.dummy_package.dummy_module2.dodo']}
+    doc_generator = autogen.DocumentationGenerator(pages=pages)
+    result = doc_generator._render('tests.dummy_package.dummy_module2.dodo')
+    assert result == expected_dodo
+
+
 class A:
     def dodo(self):
         """Some docstring."""
