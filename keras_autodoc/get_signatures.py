@@ -51,8 +51,14 @@ def get_class_signature(cls, class_aliases={}, override=None):
 def get_signature(object_, class_aliases, override):
     if inspect.isclass(object_):
         return get_class_signature(object_, class_aliases, override)
-    else:
+    elif inspect.isfunction(object_) or inspect.ismethod(object_):
         return get_function_signature(object_, class_aliases, override)
+    elif hasattr(object_, 'fget'):
+        # properties
+        if override:
+            return override
+        return get_function_signature(object_.fget)
+    raise ValueError(f'Not able to retrieve signature for object {object_}')
 
 
 def format_signature(signature_start: str, signature_end: str):

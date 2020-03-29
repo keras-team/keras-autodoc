@@ -9,6 +9,7 @@ from .get_signatures import get_signature
 
 from . import utils
 from .utils import get_type
+from .utils import get_name
 
 
 class DocumentationGenerator:
@@ -75,7 +76,7 @@ class DocumentationGenerator:
         """Can be overridden."""
         return signature
 
-    def _render(self, element):
+    def render(self, element):
         if isinstance(element, str):
             object_ = utils.import_object(element)
             if utils.ismethod(object_):
@@ -95,7 +96,7 @@ class DocumentationGenerator:
             subblocks.append(utils.make_source_link(object_, self.project_url))
         signature = get_signature(object_, self.class_aliases, signature_override)
         signature = self.process_signature(signature)
-        subblocks.append(f"### {object_.__name__} {get_type(object_)}\n")
+        subblocks.append(f"### {get_name(object_)} {get_type(object_)}\n")
         subblocks.append(utils.code_snippet(signature))
 
         docstring = getdoc(object_)
@@ -106,6 +107,11 @@ class DocumentationGenerator:
 
     def _fill_aliases(self):
         for list_elements in self.pages.values():
+            if not isinstance(list_elements, (list, tuple)):
+                raise ValueError(
+                    'Dictionary `pages` must map file paths to '
+                    'lists of objects. Expected a list, '
+                    'but got %s of type %s.' % (list_elements, type(list_elements)))
             for element_as_str in list_elements:
                 element = utils.import_object(element_as_str)
                 if not isclass(element):

@@ -104,9 +104,17 @@ def get_type(object_) -> str:
         return 'method'
     elif inspect.isfunction(object_):
         return 'function'
+    elif hasattr(object_, 'fget'):
+        return 'property'
     else:
-        raise TypeError(f'{object_} is detected as neither a class, a method nor'
-                        f'a function.')
+        raise TypeError(f'{object_} is detected as not a class, a method, '
+                        f'a property, nor a function.')
+
+
+def get_name(object_) -> str:
+    if hasattr(object_, 'fget'):
+        return object_.fget.__name__
+    return object_.__name__
 
 
 def insert_in_string(target, string_to_insert, start, end):
