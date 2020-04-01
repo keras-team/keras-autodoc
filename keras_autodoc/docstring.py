@@ -65,8 +65,8 @@ def get_google_style_sections(docstring):
 def to_markdown(google_style_section: str) -> str:
     end_first_line = google_style_section.find('\n')
     section_title = google_style_section[2:end_first_line]
-    section_body = google_style_section[end_first_line + 1:]
-    section_body = utils.remove_indentation(section_body.strip())
+    section_body = google_style_section[end_first_line:]
+    section_body = utils.remove_indentation(section_body)
     if section_title in ('Arguments', 'Attributes', 'Raises'):
         # it's a list of elements, a special formatting is applied.
         section_body = format_as_markdown_list(section_body)

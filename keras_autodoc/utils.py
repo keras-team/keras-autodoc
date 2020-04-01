@@ -116,10 +116,12 @@ def insert_in_string(target, string_to_insert, start, end):
 
 
 def remove_indentation(string):
-    string = string.replace('\n    ', '\n')
-    if string[:4] == '    ':
-        string = string[4:]
-    return string
+    lines = string.split('\n')
+    leading_spaces = [count_leading_spaces(l) for l in lines if l]
+    if leading_spaces:
+        min_leading_spaces = min(leading_spaces)
+        string = '\n'.join(l[min_leading_spaces:] for l in lines)
+    return string.strip()  # Drop leading/closing empty lines
 
 
 def get_dotted_path(class_):
