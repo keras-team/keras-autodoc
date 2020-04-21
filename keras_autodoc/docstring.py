@@ -1,5 +1,6 @@
 import re
 import itertools
+from sphinx.util.typing import stringify
 
 from . import utils
 
@@ -62,14 +63,14 @@ def get_google_style_sections(docstring):
     return google_style_sections, docstring
 
 
-def to_markdown(google_style_section: str) -> str:
+def to_markdown(google_style_section: str, types: dict = None) -> str:
     end_first_line = google_style_section.find('\n')
     section_title = google_style_section[2:end_first_line]
     section_body = google_style_section[end_first_line + 1:]
     section_body = utils.remove_indentation(section_body.strip())
     if section_title in ('Arguments', 'Attributes', 'Raises'):
         # it's a list of elements, a special formatting is applied.
-        section_body = format_as_markdown_list(section_body)
+        section_body = format_as_markdown_list(section_body, types)
 
     if section_body:
         return f'__{section_title}__\n\n{section_body}\n'
@@ -77,9 +78,16 @@ def to_markdown(google_style_section: str) -> str:
         return f'__{section_title}__\n'
 
 
-def format_as_markdown_list(section_body):
+def format_as_markdown_list(section_body, types: dict = None):
     section_body = re.sub(r'\n([^ ].*?):', r'\n- __\1__:', section_body)
     section_body = re.sub(r'^([^ ].*?):', r'- __\1__:', section_body)
+
+    # Optionally add type annotations to docstring
+    for arg, arg_type in types.items() if types else {}:
+        section_body = re.sub(
+            rf"(- __{arg}__)", rf"\1 `{stringify(arg_type)}`", section_body
+        )
+
     return section_body
 
 
@@ -89,12 +97,12 @@ def reinject_strings(target, strings_to_inject):
     return target
 
 
-def process_docstring(docstring):
+def process_docstring(docstring, types: dict = None):
     if docstring[-1] != '\n':
         docstring += '\n'
     google_style_sections, docstring = get_google_style_sections(docstring)
 
     for token, google_style_section in google_style_sections.items():
-        markdown_section = to_markdown(google_style_section)
+        markdown_section = to_markdown(google_style_section, types)
         docstring = docstring.replace(token, markdown_section)
     return docstring

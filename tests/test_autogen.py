@@ -3,6 +3,7 @@ from keras_autodoc import autogen
 from keras_autodoc import get_methods
 import pytest
 import pathlib
+from typing import Union, Optional, Tuple
 from .dummy_package import dummy_module
 
 test_doc1 = {
@@ -442,7 +443,7 @@ expected_dodo = """### dodo function
 
 
 ```python
-tests.dummy_package.dummy_module2.dodo(x: tests.dummy_package.DataGenerator)
+tests.dummy_package.dummy_module2.dodo(x)
 ```
 
 
@@ -476,6 +477,44 @@ class B(A):
 def test_get_docstring_of_super_class():
     computed = autogen.DocumentationGenerator()._render(B.dodo)
     assert 'Some docstring' in computed
+
+
+def water_plant(
+    self, amount: Union[int, float], fertilizer_type: Optional[str] = None
+):
+    """Give your plant some water.
+
+    # Arguments
+        amount: How much water to give.
+        fertilizer_type: What kind of fertilizer to add.
+    """
+
+    pass
+
+
+def test_types_in_docstring():
+    result = autogen.DocumentationGenerator()._render(water_plant)
+
+    assert "water_plant(self, amount, fertilizer_type=None)" in result
+    assert "- __amount__ `Union[int, float]`: How much" in result
+    assert "- __fertilizer_type__ `Optional[str]`: What" in result
+
+
+def hard_method(self, arg: Union[int, Tuple[int, int]], arg2: int = 0) -> int:
+    """Can we parse this?
+
+    # Arguments
+        arg: One or two integers.
+        arg2: One integer.
+    """
+    pass
+
+
+def test_hard_method():
+    generated = autogen.DocumentationGenerator()._render(hard_method)
+
+    assert "- __arg__ `Union[int, Tuple[int, int]]`: One or" in generated
+    assert "- __arg2__ `int`: One integer." in generated
 
 
 if __name__ == "__main__":

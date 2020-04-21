@@ -94,7 +94,7 @@ the output would have shape `(batch_size, units)`.
 
 ```python
 tests.dummy_package.dummy_module.ImageDataGenerator(
-    featurewise_center: bool = False,
+    featurewise_center=False,
     samplewise_center=False,
     featurewise_std_normalization=False,
     samplewise_std_normalization=False,
@@ -127,7 +127,7 @@ The data will be looped over (in batches).
 
 __Arguments__
 
-- __featurewise_center__: Boolean.
+- __featurewise_center__ `bool`: Boolean.
     Set input mean to 0 over the dataset, feature-wise.
 - __samplewise_center__: Boolean. Set each sample mean to 0.
 - __featurewise_std_normalization__: Boolean.

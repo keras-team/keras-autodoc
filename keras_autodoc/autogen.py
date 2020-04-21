@@ -1,6 +1,6 @@
 import shutil
 import pathlib
-from inspect import getdoc, isclass
+from inspect import getdoc, isclass, getfullargspec
 from typing import Dict, Union
 
 from .docstring import process_docstring
@@ -67,9 +67,10 @@ class DocumentationGenerator:
         if self.examples_dir is not None:
             copy_examples(self.examples_dir, dest_dir / "examples")
 
-    def process_docstring(self, docstring):
+    def process_docstring(self, docstring, types: dict = None):
         """Can be overridden."""
-        return process_docstring(docstring)
+        processsed = process_docstring(docstring, types)
+        return processsed
 
     def process_signature(self, signature):
         """Can be overridden."""
@@ -100,7 +101,9 @@ class DocumentationGenerator:
 
         docstring = getdoc(object_)
         if docstring:
-            docstring = self.process_docstring(docstring)
+            docstring = self.process_docstring(
+                docstring, getfullargspec(object_).annotations
+            )
             subblocks.append(docstring)
         return "\n\n".join(subblocks) + '\n\n----\n\n'
 

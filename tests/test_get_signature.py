@@ -1,3 +1,5 @@
+from typing import Tuple, Union
+
 from keras_autodoc.get_signatures import get_signature_end
 from keras_autodoc.get_signatures import get_signature_start
 from keras_autodoc.get_signatures import get_class_signature
@@ -14,7 +16,10 @@ def test_get_signature_end():
 
 
 class Dog:
-    def woof(self, volume, good_boy=True, name='doggy'):
+    def woof(self, volume, good_boy: bool = True, name: str = 'doggy') -> int:
+        pass
+
+    def hard_method(self, arg: Union[int, Tuple[int, int]], arg2: int = 0) -> int:
         pass
 
 
@@ -23,6 +28,13 @@ def test_get_signature_end_method():
     expected = "(volume, good_boy=True, name='doggy')"
     computed = get_signature_end(Dog.woof)
     assert expected == computed
+
+
+def test_get_signature_end_method_hard():
+
+    expected = "(arg, arg2=0)"
+    result = get_signature_end(Dog.hard_method)
+    assert expected == result
 
 
 def test_get_signature_start_method():
@@ -44,7 +56,7 @@ def test_get_class_signature():
 
 
 class HelloWorld2:
-    def __init__(self, one, two, three=3):
+    def __init__(self, one, two, three: int = 3):
         pass
 
 

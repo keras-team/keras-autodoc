@@ -105,3 +105,6 @@ venv.bak/
 .idea/
 docs/sources
 docs/site
+
+# IDE stuff
+.vscode/
