@@ -5,6 +5,7 @@ import pytest
 import pathlib
 from typing import Union, Optional, Tuple
 from .dummy_package import dummy_module
+from . import dummy_package
 
 test_doc1 = {
     "doc": """Base class for recurrent layers.
@@ -515,6 +516,30 @@ def test_hard_method():
 
     assert "- __arg__ `Union[int, Tuple[int, int]]`: One or" in generated
     assert "- __arg2__ `int`: One integer." in generated
+
+
+def doing_things(an_argument: dummy_package.DataGenerator):
+    """A function
+
+    # Arguments
+        an_argument: Some generator
+
+    """
+
+
+def test_rendinging_with_extra_alias():
+    extra_aliases = ["tests.dummy_package.DataGenerator"]
+    generated = autogen.DocumentationGenerator(extra_aliases=extra_aliases)._render(
+        doing_things)
+    assert "- __an_argument__ `tests.dummy_package.DataGenerator`: Some" in generated
+
+
+def test_rendinging_with_extra_alias_custom_alias():
+    extra_aliases = {"tests.dummy_package.dummy_module.ImageDataGenerator":
+                     "some.new.Thing"}
+    generated = autogen.DocumentationGenerator(extra_aliases=extra_aliases)._render(
+        doing_things)
+    assert "- __an_argument__ `some.new.Thing`: Some" in generated
 
 
 if __name__ == "__main__":

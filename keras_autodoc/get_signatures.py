@@ -20,39 +20,37 @@ def get_signature_start(function):
     return f'{prefix}{function.__name__}'
 
 
-def get_signature_end(function, class_aliases={}):
+def get_signature_end(function):
     signature_end = Signature(function).format_args(show_annotation=False)
     if utils.ismethod(function):
         signature_end = signature_end.replace('(self, ', '(')
         signature_end = signature_end.replace('(self)', '()')
-    for dotted_path, alias in class_aliases.items():
-        signature_end = signature_end.replace(dotted_path, alias)
     return signature_end
 
 
-def get_function_signature(function, class_aliases={}, override=None):
+def get_function_signature(function, override=None):
     if override is None:
         signature_start = get_signature_start(function)
     else:
         signature_start = override
-    signature_end = get_signature_end(function, class_aliases)
+    signature_end = get_signature_end(function)
     return format_signature(signature_start, signature_end)
 
 
-def get_class_signature(cls, class_aliases={}, override=None):
+def get_class_signature(cls, override=None):
     if override is None:
         signature_start = f'{cls.__module__}.{cls.__name__}'
     else:
         signature_start = override
-    signature_end = get_signature_end(cls.__init__, class_aliases)
+    signature_end = get_signature_end(cls.__init__)
     return format_signature(signature_start, signature_end)
 
 
-def get_signature(object_, class_aliases, override):
+def get_signature(object_, override):
     if inspect.isclass(object_):
-        return get_class_signature(object_, class_aliases, override)
+        return get_class_signature(object_, override)
     else:
-        return get_function_signature(object_, class_aliases, override)
+        return get_function_signature(object_, override)
 
 
 def format_signature(signature_start: str, signature_end: str):

@@ -1,7 +1,7 @@
 import shutil
 import pathlib
 from inspect import getdoc, isclass, getfullargspec
-from typing import Dict, Union
+from typing import Dict, Union, List
 
 from .docstring import process_docstring
 from .examples import copy_examples
@@ -29,18 +29,31 @@ class DocumentationGenerator:
             and then add the markdown file to the `pages` dictionary.
         example_dir: Where you store examples in your project. Usually standalone
             files with a markdown docstring at the top. Will be inserted in the docs.
+        extra_aliases: When displaying type hints, it's possible that the full
+            dotted path is displayed instead of alias. The aliases present in
+            `pages` are used, but it may happen if you're using a third-party library.
+            For example `tensorflow.python.ops.variables.Variable` is displayed instead
+            of `tensorflow.Variable`. Here you have two solutions, either you provide
+            the import keras-autodoc should follow:
+            `extra_aliases=["tensorflow.Variable"]`, either you provide a mapping to use
+            `extra_aliases={"tensorflow.python.ops.variables.Variable": "tf.Variable"}`.
+            The second option should be used if you want more control and that you
+            don't want to respect the alias corresponding to the import (you can't do
+            `import tf.Varaible`). When giving a list, keras-autodoc will try to import
+            the object from the string to understand what object you want to replace.
     """
     def __init__(self,
                  pages: Dict[str, list] = {},
                  project_url: Union[str, Dict[str, str]] = None,
                  template_dir=None,
-                 examples_dir=None):
+                 examples_dir=None,
+                 extra_aliases: Union[List[str], Dict[str, str]] = None):
         self.pages = pages
         self.project_url = project_url
         self.template_dir = template_dir
         self.examples_dir = examples_dir
         self.class_aliases = {}
-        self._fill_aliases()
+        self._fill_aliases(extra_aliases)
 
     def generate(self, dest_dir):
         """Generate the docs.
@@ -69,7 +82,7 @@ class DocumentationGenerator:
 
     def process_docstring(self, docstring, types: dict = None):
         """Can be overridden."""
-        processsed = process_docstring(docstring, types)
+        processsed = process_docstring(docstring, types, self.class_aliases)
         return processsed
 
     def process_signature(self, signature):
@@ -94,7 +107,7 @@ class DocumentationGenerator:
         subblocks = []
         if self.project_url is not None:
             subblocks.append(utils.make_source_link(object_, self.project_url))
-        signature = get_signature(object_, self.class_aliases, signature_override)
+        signature = get_signature(object_, signature_override)
         signature = self.process_signature(signature)
         subblocks.append(f"### {object_.__name__} {get_type(object_)}\n")
         subblocks.append(utils.code_snippet(signature))
@@ -107,7 +120,7 @@ class DocumentationGenerator:
             subblocks.append(docstring)
         return "\n\n".join(subblocks) + '\n\n----\n\n'
 
-    def _fill_aliases(self):
+    def _fill_aliases(self, extra_aliases):
         for list_elements in self.pages.values():
             for element_as_str in list_elements:
                 element = utils.import_object(element_as_str)
@@ -115,3 +128,10 @@ class DocumentationGenerator:
                     continue
                 true_dotted_path = utils.get_dotted_path(element)
                 self.class_aliases[true_dotted_path] = element_as_str
+
+        if isinstance(extra_aliases, dict):
+            self.class_aliases.update(extra_aliases)
+        elif isinstance(extra_aliases, list):
+            for alias in extra_aliases:
+                full_dotted_path = utils.get_dotted_path(utils.import_object(alias))
+                self.class_aliases[full_dotted_path] = alias

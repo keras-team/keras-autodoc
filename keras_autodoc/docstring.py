@@ -63,14 +63,17 @@ def get_google_style_sections(docstring):
     return google_style_sections, docstring
 
 
-def to_markdown(google_style_section: str, types: dict = None) -> str:
+def to_markdown(google_style_section: str, types: dict = None, aliases=None) -> str:
     end_first_line = google_style_section.find('\n')
     section_title = google_style_section[2:end_first_line]
     section_body = google_style_section[end_first_line + 1:]
     section_body = utils.remove_indentation(section_body.strip())
-    if section_title in ('Arguments', 'Attributes', 'Raises'):
-        # it's a list of elements, a special formatting is applied.
-        section_body = format_as_markdown_list(section_body, types)
+
+    # it's a list of elements, a special formatting is applied.
+    if section_title == "Arguments":
+        section_body = format_as_markdown_list(section_body, types, aliases)
+    elif section_title in ('Attributes', 'Raises'):
+        section_body = format_as_markdown_list(section_body)
 
     if section_body:
         return f'__{section_title}__\n\n{section_body}\n'
@@ -78,17 +81,25 @@ def to_markdown(google_style_section: str, types: dict = None) -> str:
         return f'__{section_title}__\n'
 
 
-def format_as_markdown_list(section_body, types: dict = None):
+def format_as_markdown_list(section_body, types: dict = None, aliases: dict = None):
     section_body = re.sub(r'\n([^ ].*?):', r'\n- __\1__:', section_body)
     section_body = re.sub(r'^([^ ].*?):', r'- __\1__:', section_body)
 
     # Optionally add type annotations to docstring
-    for arg, arg_type in types.items() if types else {}:
-        section_body = re.sub(
-            rf"(- __{arg}__)", rf"\1 `{stringify(arg_type)}`", section_body
-        )
+    if types:
+        for arg, arg_type in types.items():
+            type_hint_str = apply_aliases(stringify(arg_type), aliases)
+            section_body = re.sub(
+                rf"(- __{arg}__)", rf"\1 `{type_hint_str}`", section_body
+            )
 
     return section_body
+
+
+def apply_aliases(string: str, aliases: dict):
+    for dotted_path, alias in aliases.items():
+        string = string.replace(dotted_path, alias)
+    return string
 
 
 def reinject_strings(target, strings_to_inject):
@@ -97,12 +108,12 @@ def reinject_strings(target, strings_to_inject):
     return target
 
 
-def process_docstring(docstring, types: dict = None):
+def process_docstring(docstring, types: dict = None, aliases=None):
     if docstring[-1] != '\n':
         docstring += '\n'
     google_style_sections, docstring = get_google_style_sections(docstring)
 
     for token, google_style_section in google_style_sections.items():
-        markdown_section = to_markdown(google_style_section, types)
+        markdown_section = to_markdown(google_style_section, types, aliases)
         docstring = docstring.replace(token, markdown_section)
     return docstring
