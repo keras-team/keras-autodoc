@@ -41,19 +41,25 @@ class DocumentationGenerator:
             don't want to respect the alias corresponding to the import (you can't do
             `import tf.Varaible`). When giving a list, keras-autodoc will try to import
             the object from the string to understand what object you want to replace.
+        max_signature_line_length: When displaying class and function signatures,
+            keras-autodoc formats them using Black. This parameter controls the
+            maximum line length of these signatures, and is passed directly through
+            to Black.
     """
     def __init__(self,
                  pages: Dict[str, list] = {},
                  project_url: Union[str, Dict[str, str]] = None,
                  template_dir=None,
                  examples_dir=None,
-                 extra_aliases: Union[List[str], Dict[str, str]] = None):
+                 extra_aliases: Union[List[str], Dict[str, str]] = None,
+                 max_signature_line_length: int = 110):
         self.pages = pages
         self.project_url = project_url
         self.template_dir = template_dir
         self.examples_dir = examples_dir
         self.class_aliases = {}
         self._fill_aliases(extra_aliases)
+        self.max_signature_line_length = max_signature_line_length
 
     def generate(self, dest_dir):
         """Generate the docs.
@@ -107,7 +113,9 @@ class DocumentationGenerator:
         subblocks = []
         if self.project_url is not None:
             subblocks.append(utils.make_source_link(object_, self.project_url))
-        signature = get_signature(object_, signature_override)
+        signature = get_signature(
+            object_, signature_override, self.max_signature_line_length
+        )
         signature = self.process_signature(signature)
         subblocks.append(f"### {object_.__name__} {get_type(object_)}\n")
         subblocks.append(utils.code_snippet(signature))

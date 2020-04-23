@@ -28,32 +28,34 @@ def get_signature_end(function):
     return signature_end
 
 
-def get_function_signature(function, override=None):
+def get_function_signature(function, override=None, max_line_length: int = 110):
     if override is None:
         signature_start = get_signature_start(function)
     else:
         signature_start = override
     signature_end = get_signature_end(function)
-    return format_signature(signature_start, signature_end)
+    return format_signature(signature_start, signature_end, max_line_length)
 
 
-def get_class_signature(cls, override=None):
+def get_class_signature(cls, override=None, max_line_length: int = 110):
     if override is None:
         signature_start = f'{cls.__module__}.{cls.__name__}'
     else:
         signature_start = override
     signature_end = get_signature_end(cls.__init__)
-    return format_signature(signature_start, signature_end)
+    return format_signature(signature_start, signature_end, max_line_length)
 
 
-def get_signature(object_, override):
+def get_signature(object_, override=None, max_line_length: int = 110):
     if inspect.isclass(object_):
-        return get_class_signature(object_, override)
+        return get_class_signature(object_, override, max_line_length)
     else:
-        return get_function_signature(object_, override)
+        return get_function_signature(object_, override, max_line_length)
 
 
-def format_signature(signature_start: str, signature_end: str):
+def format_signature(
+    signature_start: str, signature_end: str, max_line_length: int = 110
+):
     """pretty formatting to avoid long signatures on one single line"""
 
     # first, we make it look like a real function declaration.
@@ -62,7 +64,7 @@ def format_signature(signature_start: str, signature_end: str):
     fake_python_code = f'def {fake_signature}:\n    pass\n'
 
     # we format with black
-    mode = black.FileMode(line_length=110)
+    mode = black.FileMode(line_length=max_line_length)
     formatted_fake_python_code = black.format_str(fake_python_code, mode=mode)
 
     # we make the final, multiline signature
