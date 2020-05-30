@@ -440,7 +440,7 @@ def test_aliases_methods(element, expected):
     assert expected in computed
 
 
-expected_dodo = """### dodo function
+expected_dodo = """### dodo
 
 
 ```python

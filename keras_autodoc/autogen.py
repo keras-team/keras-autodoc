@@ -8,7 +8,6 @@ from .examples import copy_examples
 from .get_signatures import get_signature
 
 from . import utils
-from .utils import get_type
 
 
 class DocumentationGenerator:
@@ -117,7 +116,7 @@ class DocumentationGenerator:
             object_, signature_override, self.max_signature_line_length
         )
         signature = self.process_signature(signature)
-        subblocks.append(f"### {object_.__name__} {get_type(object_)}\n")
+        subblocks.append(f"### {object_.__name__}\n")
         subblocks.append(utils.code_snippet(signature))
 
         docstring = getdoc(object_)

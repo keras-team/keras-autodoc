@@ -1,6 +1,6 @@
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L1)</span>
 
-### Dense class
+### Dense
 
 
 ```python
@@ -89,7 +89,7 @@ the output would have shape `(batch_size, units)`.
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L113)</span>
 
-### ImageDataGenerator class
+### ImageDataGenerator
 
 
 ```python
@@ -326,7 +326,7 @@ model.fit_generator(
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L340)</span>
 
-### flow method
+### flow
 
 
 ```python
@@ -394,7 +394,7 @@ If `y` is None, only the numpy array `x` is returned.
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L395)</span>
 
-### flow_from_directory method
+### flow_from_directory
 
 
 ```python
@@ -498,7 +498,7 @@ and `y` is a numpy array of corresponding labels.
 
 <span style="float:right;">[[source]](www.dummy.com/my_project/tests/dummy_package/dummy_module.py#L78)</span>
 
-### to_categorical function
+### to_categorical
 
 
 ```python
