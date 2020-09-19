@@ -440,7 +440,7 @@ def test_aliases_methods(element, expected):
     assert expected in computed
 
 
-expected_dodo = """### dodo
+expected_dodo = """ dodo
 
 
 ```python
@@ -456,12 +456,13 @@ Some dodo
 """
 
 
-def test_aliases_in_hints():
+@pytest.mark.parametrize("titles_size", ["###", "##"])
+def test_aliases_in_hints(titles_size):
     pages = {'dod.md': ['tests.dummy_package.DataGenerator',
                         'tests.dummy_package.dummy_module2.dodo']}
-    doc_generator = autogen.DocumentationGenerator(pages=pages)
+    doc_generator = autogen.DocumentationGenerator(pages=pages, titles_size=titles_size)
     result = doc_generator._render('tests.dummy_package.dummy_module2.dodo')
-    assert result == expected_dodo
+    assert result == titles_size + expected_dodo
 
 
 class A:

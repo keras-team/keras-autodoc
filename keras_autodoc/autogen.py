@@ -38,12 +38,13 @@ class DocumentationGenerator:
             `extra_aliases={"tensorflow.python.ops.variables.Variable": "tf.Variable"}`.
             The second option should be used if you want more control and that you
             don't want to respect the alias corresponding to the import (you can't do
-            `import tf.Varaible`). When giving a list, keras-autodoc will try to import
+            `import tf.Variable`). When giving a list, keras-autodoc will try to import
             the object from the string to understand what object you want to replace.
         max_signature_line_length: When displaying class and function signatures,
             keras-autodoc formats them using Black. This parameter controls the
             maximum line length of these signatures, and is passed directly through
             to Black.
+        titles_size: `"#"` signs to put before a title in the generated markdown.
     """
     def __init__(self,
                  pages: Dict[str, list] = {},
@@ -51,7 +52,8 @@ class DocumentationGenerator:
                  template_dir=None,
                  examples_dir=None,
                  extra_aliases: Union[List[str], Dict[str, str]] = None,
-                 max_signature_line_length: int = 110):
+                 max_signature_line_length: int = 110,
+                 titles_size="###"):
         self.pages = pages
         self.project_url = project_url
         self.template_dir = template_dir
@@ -59,6 +61,7 @@ class DocumentationGenerator:
         self.class_aliases = {}
         self._fill_aliases(extra_aliases)
         self.max_signature_line_length = max_signature_line_length
+        self.titles_size = titles_size
 
     def generate(self, dest_dir):
         """Generate the docs.
@@ -116,7 +119,7 @@ class DocumentationGenerator:
             object_, signature_override, self.max_signature_line_length
         )
         signature = self.process_signature(signature)
-        subblocks.append(f"### {object_.__name__}\n")
+        subblocks.append(f"{self.titles_size} {object_.__name__}\n")
         subblocks.append(utils.code_snippet(signature))
 
         docstring = getdoc(object_)
