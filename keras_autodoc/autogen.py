@@ -1,7 +1,7 @@
 import shutil
 import pathlib
-from inspect import getdoc, isclass, getfullargspec
-from typing import Dict, Union, List
+from inspect import getdoc, isclass
+from typing import Dict, Union, List, get_type_hints
 
 from .docstring import process_docstring
 from .examples import copy_examples
@@ -124,9 +124,11 @@ class DocumentationGenerator:
 
         docstring = getdoc(object_)
         if docstring:
-            docstring = self.process_docstring(
-                docstring, getfullargspec(object_).annotations
-            )
+            if isclass(object_):
+                type_hints = get_type_hints(object_.__init__)
+            else:
+                type_hints = get_type_hints(object_)
+            docstring = self.process_docstring(docstring, type_hints)
             subblocks.append(docstring)
         return "\n\n".join(subblocks) + '\n\n----\n\n'
 

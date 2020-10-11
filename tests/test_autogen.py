@@ -2,6 +2,7 @@ from markdown import markdown
 from keras_autodoc import autogen
 from keras_autodoc import get_methods
 import pytest
+import sys
 import pathlib
 from typing import Union, Optional, Tuple
 from .dummy_package import dummy_module
@@ -541,6 +542,15 @@ def test_rendinging_with_extra_alias_custom_alias():
     generated = autogen.DocumentationGenerator(extra_aliases=extra_aliases)._render(
         doing_things)
     assert "- __an_argument__ `some.new.Thing`: Some" in generated
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 7),
+    reason="the __future__ annotations only works with py37+."
+)
+def test_future_annotations():
+    from . import autogen_future
+    autogen_future.test_rendinging_with_extra_alias()
 
 
 if __name__ == "__main__":
